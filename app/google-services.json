@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1074273501107",
+    "project_id": "tasktracker-67e10",
+    "storage_bucket": "tasktracker-67e10.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1074273501107:android:2b80211d38cc23552955c6",
+        "android_client_info": {
+          "package_name": "com.example.tasktracker"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBc0HoN9Aqa-gPaWlIA-BY__lEYETX9hfM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
