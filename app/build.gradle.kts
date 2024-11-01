@@ -43,6 +43,9 @@ dependencies {
 
     // Room for offline database
     implementation("androidx.room:room-runtime:2.5.1")
+    implementation(libs.activity)
+    implementation(libs.constraintlayout)
+    implementation(libs.firebase.firestore)
     annotationProcessor("androidx.room:room-compiler:2.5.1") // Use 'kapt' if you're using Kotlin
 
     // Lifecycle dependencies for ViewModel and LiveData
