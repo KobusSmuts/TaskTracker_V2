@@ -17,6 +17,7 @@ public abstract class AppDatabase extends RoomDatabase {
                             AppDatabase.class, "task_tracker_db")
                     .fallbackToDestructiveMigration()
                     .build();
+
         }
         return instance;
     }
