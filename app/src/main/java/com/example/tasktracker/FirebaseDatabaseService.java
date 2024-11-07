@@ -1,5 +1,7 @@
 package com.example.tasktracker;
 
+import androidx.annotation.NonNull;
+
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -10,27 +12,30 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class FirebaseDatabaseService {
-    private DatabaseReference database;
+    private FirebaseDatabase database;
 
     public FirebaseDatabaseService() {
-        database = FirebaseDatabase.getInstance().getReference("tasks");
+        database = FirebaseDatabase.getInstance("https://tasktracker-67e10-default-rtdb.europe-west1.firebasedatabase.app");
     }
 
     // Add task to Firebase
     public void addTask(Task task) {
-        database.child(task.getId()).setValue(task);
+        DatabaseReference tasksRef = database.getReference("tasks");
+        tasksRef.push().setValue(task);
     }
 
     // Update task status
     public void updateTaskStatus(String taskId, String status) {
-        database.child(taskId).child("status").setValue(status);
+        DatabaseReference tasksRef = database.getReference("tasks");
+        tasksRef.child(taskId).child("status").setValue(status);
     }
 
     // Get all tasks
     public void getAllTasks(final FirebaseTasksCallback callback) {
-        database.addValueEventListener(new ValueEventListener() {
+        DatabaseReference tasksRef = database.getReference("tasks");
+        tasksRef.addValueEventListener(new ValueEventListener() {
             @Override
-            public void onDataChange(DataSnapshot snapshot) {
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
                 List<Task> taskList = new ArrayList<>();
                 for (DataSnapshot taskSnapshot : snapshot.getChildren()) {
                     Task task = taskSnapshot.getValue(Task.class);

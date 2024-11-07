@@ -28,17 +28,18 @@ public class TaskAdapter extends ListAdapter<Task, TaskAdapter.TaskViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull TaskViewHolder holder, int position) {
         Task currentTask = getItem(position);
-        holder.textViewTaskName.setText(currentTask.getName());
-        holder.textViewTaskStatus.setText(currentTask.getStatus());
+        if (currentTask != null) {
+            holder.textViewTaskName.setText(currentTask.getName());
+            holder.textViewTaskStatus.setText(currentTask.getStatus());
+            holder.itemView.setBackgroundColor(selectedPosition == position ? 0xFFCCCCCC : 0xFFFFFFFF);
 
-        // Highlight selected item
-        holder.itemView.setBackgroundColor(selectedPosition == position ? 0xFFCCCCCC : 0xFFFFFFFF); // Change colors as needed
-
-        holder.itemView.setOnClickListener(v -> {
-            notifyItemChanged(selectedPosition); // Reset previously selected item
-            selectedPosition = holder.getAdapterPosition(); // Update selected position
-            notifyItemChanged(selectedPosition); // Notify to highlight selected item
-        });
+            // Highlight selected item logic
+            holder.itemView.setOnClickListener(v -> {
+                notifyItemChanged(selectedPosition); // Reset previously selected item
+                selectedPosition = holder.getAdapterPosition(); // Update selected position
+                notifyItemChanged(selectedPosition); // Notify to highlight selected item
+            });
+        }
     }
 
     class TaskViewHolder extends RecyclerView.ViewHolder {

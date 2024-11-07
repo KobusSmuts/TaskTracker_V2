@@ -45,13 +45,13 @@ public class TaskListActivity extends AppCompatActivity {
         });
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 1 && resultCode == RESULT_OK) {
-            // If task is added successfully, you might want to refresh the list or handle accordingly
-            // Optionally, you can retrieve task data from the Intent if needed
-        }
-    }
+//    @Override
+//    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+//        super.onActivityResult(requestCode, resultCode, data);
+//        if (requestCode == 1 && resultCode == RESULT_OK) {
+//            taskViewModel.refreshTasks(); // Assume you have a method to refresh data in the ViewModel
+//        }
+//    }
+
 }
 

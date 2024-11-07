@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 //import androidx.activity.viewModels;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
@@ -23,6 +24,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        Button btnSync = findViewById(R.id.sync_button);
+//        Button btnAddTask = findViewById(R.id.btnAddTask);
+//        Button btnTaskList = findViewById(R.id.btnTaskList);
         Button btnLogout = findViewById(R.id.btnLogout);
 
         // Initialize Room database and DAO
@@ -36,23 +40,35 @@ public class MainActivity extends AppCompatActivity {
             public void onChanged(Boolean syncSuccessful) {
                 if (syncSuccessful) {
                     // Update UI or notify user of success
+
+                    Toast.makeText(MainActivity.this, "Sync successful", Toast.LENGTH_SHORT).show();
                 } else {
                     // Handle sync failure
+                    Toast.makeText(MainActivity.this, "Sync failed", Toast.LENGTH_SHORT).show();
                 }
             }
         });
 
         // Sync tasks when needed
-        syncManager.syncTasks();
+        btnSync.setOnClickListener(view -> syncManager.syncTasks());
 
-        btnLogout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                FirebaseAuth.getInstance().signOut();
-                Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-                startActivity(intent);
-                finish();
-            }
+        btnAddTask.setOnClickListener(view -> {
+            Intent intent = new Intent(MainActivity.this, CreateTaskActivity.class);
+            startActivity(intent);
+            finish();
+        });
+
+        btnTaskList.setOnClickListener(view -> {
+            Intent intent = new Intent(MainActivity.this, TaskListActivity.class);
+            startActivity(intent);
+            finish();
+        });
+
+        btnLogout.setOnClickListener(view -> {
+            FirebaseAuth.getInstance().signOut();
+            Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+            startActivity(intent);
+            finish();
         });
     }
 }
