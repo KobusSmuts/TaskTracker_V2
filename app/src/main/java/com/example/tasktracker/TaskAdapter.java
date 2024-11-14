@@ -1,76 +1,95 @@
 package com.example.tasktracker;
 
-import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
+/**
+ * Adapter for displaying a list of tasks in the RecyclerView.
+ */
 public class TaskAdapter extends ListAdapter<Task, TaskAdapter.TaskViewHolder> {
 
-    private int selectedPosition = RecyclerView.NO_POSITION; // To track selected position
+    private OnTaskClickListener onTaskClickListener; // Listener for task clicks
 
-    protected TaskAdapter(@NonNull DiffUtil.ItemCallback<Task> diffCallback) {
-        super(diffCallback);
+    public TaskAdapter() {
+        super(new TaskDiffCallback());
     }
 
     @NonNull
     @Override
     public TaskViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.task_item, parent, false);
+        View itemView = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.activity_task_view, parent, false);
         return new TaskViewHolder(itemView);
     }
 
     @Override
     public void onBindViewHolder(@NonNull TaskViewHolder holder, int position) {
-        Task currentTask = getItem(position);
-        if (currentTask != null) {
-            holder.textViewTaskName.setText(currentTask.getName());
-            holder.textViewTaskStatus.setText(currentTask.getStatus());
-            holder.itemView.setBackgroundColor(selectedPosition == position ? 0xFFCCCCCC : 0xFFFFFFFF);
-
-            // Highlight selected item logic
-            holder.itemView.setOnClickListener(v -> {
-                notifyItemChanged(selectedPosition); // Reset previously selected item
-                selectedPosition = holder.getAdapterPosition(); // Update selected position
-                notifyItemChanged(selectedPosition); // Notify to highlight selected item
-            });
-        }
+        Task task = getItem(position);
+        holder.bind(task);
     }
 
+    /**
+     * Sets a listener to handle task clicks.
+     */
+    public void setOnTaskClickListener(OnTaskClickListener listener) {
+        this.onTaskClickListener = listener;
+    }
+
+    /**
+     * ViewHolder for task items.
+     */
     class TaskViewHolder extends RecyclerView.ViewHolder {
         private final TextView textViewTaskName;
         private final TextView textViewTaskStatus;
 
-        public TaskViewHolder(View itemView) {
+        public TaskViewHolder(@NonNull View itemView) {
             super(itemView);
             textViewTaskName = itemView.findViewById(R.id.text_view_task_name);
             textViewTaskStatus = itemView.findViewById(R.id.text_view_task_status);
+
+            // Handle item click
+            itemView.setOnClickListener(v -> {
+                if (onTaskClickListener != null) {
+                    int position = getAdapterPosition();
+                    if (position != RecyclerView.NO_POSITION) {
+                        onTaskClickListener.onTaskClick(getItem(position));
+                    }
+                }
+            });
+        }
+
+        public void bind(Task task) {
+            textViewTaskName.setText(task.getName());
+            textViewTaskStatus.setText(task.getStatus());
         }
     }
 
-    public Task getTaskAtPosition(int position) {
-        return getItem(position);
-    }
-
-    public int getSelectedPosition() {
-        return selectedPosition;
-    }
-
-    public static class TaskDiff extends DiffUtil.ItemCallback<Task> {
+    /**
+     * Callback for calculating the diff between two tasks.
+     */
+    static class TaskDiffCallback extends DiffUtil.ItemCallback<Task> {
         @Override
         public boolean areItemsTheSame(@NonNull Task oldItem, @NonNull Task newItem) {
-            return oldItem.getId().equals(newItem.getId());
+            return oldItem.getUID().equals(newItem.getUID()); // Compare by uID
         }
 
-        @SuppressLint("DiffUtilEquals")
         @Override
         public boolean areContentsTheSame(@NonNull Task oldItem, @NonNull Task newItem) {
-            return oldItem.equals(newItem);
+            return oldItem.equals(newItem); // Compare content equality
         }
+    }
+
+    /**
+     * Interface for task click events.
+     */
+    public interface OnTaskClickListener {
+        void onTaskClick(Task task);
     }
 }
