@@ -1,5 +1,6 @@
 package com.example.tasktracker;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -14,7 +15,7 @@ import java.util.concurrent.TimeUnit;
 
 public class CreateTaskActivity extends AppCompatActivity {
     private EditText etTaskTitle, etTaskDescription, etEmployeeEmail;
-    private Button btnAddTask;
+    private Button btnAddTask, btnViewTask, btnHome;
     private FirebaseDatabaseService databaseService;
     private final ExecutorService taskCreationExecutor = Executors.newSingleThreadExecutor();
     private final Handler mainHandler = new Handler(Looper.getMainLooper());
@@ -26,6 +27,18 @@ public class CreateTaskActivity extends AppCompatActivity {
 
         initializeViews();
         setupTaskCreation();
+
+        btnHome.setOnClickListener(view -> {
+            Intent intent = new Intent(CreateTaskActivity.this, MainActivity.class);
+            startActivity(intent);
+            finish();
+        });
+
+        btnViewTask.setOnClickListener(view -> {
+            Intent intent = new Intent(CreateTaskActivity.this, TaskListActivity.class);
+            startActivity(intent);
+            finish();
+        });
     }
 
     private void initializeViews() {
@@ -33,6 +46,8 @@ public class CreateTaskActivity extends AppCompatActivity {
         etTaskTitle = findViewById(R.id.etTaskTitle);
         etTaskDescription = findViewById(R.id.etTaskDescription);
         btnAddTask = findViewById(R.id.btnAddTask);
+        btnViewTask = findViewById(R.id.btnViewTasks);
+        btnHome = findViewById(R.id.btnHome);
         databaseService = new FirebaseDatabaseService();
     }
 

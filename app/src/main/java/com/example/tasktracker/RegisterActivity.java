@@ -13,7 +13,7 @@ import com.google.firebase.auth.FirebaseUser;
 
 public class RegisterActivity extends AppCompatActivity {
     private EditText etEmail, etCompanyName, etUsername, etPassword;
-    private Button btnRegister;
+    private Button btnRegister, btnLogin;
     private FirebaseAuthService authService;
 
     public void onStart() {
@@ -36,6 +36,7 @@ public class RegisterActivity extends AppCompatActivity {
         etUsername = findViewById(R.id.etUsername);
         etPassword = findViewById(R.id.etPassword);
         btnRegister = findViewById(R.id.btnRegister);
+        btnLogin = findViewById(R.id.btnLogin);
         authService = new FirebaseAuthService();
 
         btnRegister.setOnClickListener(view -> {
@@ -60,6 +61,12 @@ public class RegisterActivity extends AppCompatActivity {
                     Toast.makeText(RegisterActivity.this, "Registration failed!", Toast.LENGTH_SHORT).show();
                 }
             });
+        });
+
+        btnLogin.setOnClickListener(view -> {
+            Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
+            startActivity(intent);
+            finish();
         });
     }
 }

@@ -1,7 +1,9 @@
 package com.example.tasktracker;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.Button;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -18,6 +20,8 @@ public class TaskListActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_task_list);
+
+        Button btnCreateTask = findViewById(R.id.btnCreateTask);
 
         // Set up RecyclerView
         RecyclerView recyclerView = findViewById(R.id.rvTasks);
@@ -42,6 +46,12 @@ public class TaskListActivity extends AppCompatActivity {
 
         // Handle Back Button
         findViewById(R.id.btnBackToTask).setOnClickListener(view -> {
+            Intent intent = new Intent(this, MainActivity.class);
+            startActivityForResult(intent, 1);
+        });
+
+        // handel add button
+        btnCreateTask.setOnClickListener(view -> {
             Intent intent = new Intent(this, CreateTaskActivity.class);
             startActivityForResult(intent, 1);
         });
