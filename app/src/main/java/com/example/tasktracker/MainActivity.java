@@ -26,7 +26,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Button btnSync = findViewById(R.id.sync_button);
 //        Button btnAddTask = findViewById(R.id.btnAddTask);
-//        Button btnTaskList = findViewById(R.id.btnTaskList);
+        Button btnTasks = findViewById(R.id.btnTasks);
         Button btnLogout = findViewById(R.id.btnLogout);
 
         // Initialize Room database and DAO
@@ -52,13 +52,13 @@ public class MainActivity extends AppCompatActivity {
         // Sync tasks when needed
         btnSync.setOnClickListener(view -> syncManager.syncTasks());
 
-        btnAddTask.setOnClickListener(view -> {
-            Intent intent = new Intent(MainActivity.this, CreateTaskActivity.class);
-            startActivity(intent);
-            finish();
-        });
+//        btnAddTask.setOnClickListener(view -> {
+//            Intent intent = new Intent(MainActivity.this, CreateTaskActivity.class);
+//            startActivity(intent);
+//            finish();
+//        });
 
-        btnTaskList.setOnClickListener(view -> {
+        btnTasks.setOnClickListener(view -> {
             Intent intent = new Intent(MainActivity.this, TaskListActivity.class);
             startActivity(intent);
             finish();
