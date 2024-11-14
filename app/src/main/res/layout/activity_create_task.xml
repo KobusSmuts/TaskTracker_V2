@@ -59,4 +59,15 @@
         android:background="@drawable/rounded"
         android:text="View Tasks"
         android:layout_marginTop="8dp" />
+
+    <!-- Home Button -->
+    <Button
+        android:id="@+id/btnHome"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Home"
+        android:background="@drawable/rounded"
+        android:backgroundTint="?attr/colorPrimary"
+        android:textColor="?attr/colorOnPrimary"
+        android:layout_marginTop="8dp" />
 </LinearLayout>
