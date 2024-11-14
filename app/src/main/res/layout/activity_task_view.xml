@@ -3,7 +3,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="16dp"
+    android:background="?android:attr/windowBackground">
 
     <!-- Task Name -->
     <TextView
@@ -13,18 +14,19 @@
         android:text="Task Name"
         android:textSize="22sp"
         android:textColor="?android:attr/textColorPrimary"
-        android:paddingBottom="16dp"
-        android:textStyle="bold" />
+        android:padding="16dp"
+        android:background="@drawable/rounded"
+        android:textStyle="bold"
+        android:layout_marginBottom="8dp" />
 
     <!-- Task Status -->
-    <TextView
-        android:id="@+id/text_view_task_status"
+    <Spinner
+        android:id="@+id/spinner_task_status"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Task Status"
-        android:textSize="18sp"
-        android:textColor="?android:attr/textColorSecondary"
-        android:paddingBottom="16dp" />
+        android:padding="16dp"
+        android:background="@drawable/rounded"
+        android:layout_marginBottom="8dp" />
 
     <!-- Task Description -->
     <TextView
@@ -33,5 +35,36 @@
         android:layout_height="wrap_content"
         android:text="Task Description"
         android:textSize="16sp"
-        android:textColor="?android:attr/textColorPrimary" />
+        android:textColor="?android:attr/textColorPrimary"
+        android:padding="16dp"
+        android:background="@drawable/rounded"
+        android:layout_marginBottom="16dp" />
+
+    <!-- Space element to push buttons to the bottom -->
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"/>
+
+    <!-- Apply Button -->
+    <Button
+        android:id="@+id/btnApply"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Apply"
+        android:background="@drawable/rounded"
+        android:backgroundTint="?attr/colorPrimary"
+        android:textColor="?attr/colorOnPrimary"
+        android:layout_marginBottom="8dp" />
+
+    <!-- Back Button -->
+    <Button
+        android:id="@+id/btnBack"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Back"
+        android:background="@drawable/rounded"
+        android:textColor="?attr/colorPrimary" />
+
 </LinearLayout>
