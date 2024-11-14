@@ -17,8 +17,7 @@
         android:padding="16dp"
         android:background="@drawable/rounded"
         android:layout_marginBottom="16dp"
-        android:textColor="?android:textColorPrimary"
-        android:hintTextColor="?android:textColorHint" />
+        android:textColor="?android:textColorPrimary"/>
 
     <EditText
         android:id="@+id/etCompanyName"
@@ -28,8 +27,7 @@
         android:padding="16dp"
         android:background="@drawable/rounded"
         android:layout_marginBottom="16dp"
-        android:textColor="?android:textColorPrimary"
-        android:hintTextColor="?android:textColorHint" />
+        android:textColor="?android:textColorPrimary"/>
 
     <EditText
         android:id="@+id/etUsername"
@@ -39,8 +37,7 @@
         android:padding="16dp"
         android:background="@drawable/rounded"
         android:layout_marginBottom="16dp"
-        android:textColor="?android:textColorPrimary"
-        android:hintTextColor="?android:textColorHint" />
+        android:textColor="?android:textColorPrimary"/>
 
     <EditText
         android:id="@+id/etPassword"
@@ -51,8 +48,7 @@
         android:padding="16dp"
         android:background="@drawable/rounded"
         android:layout_marginBottom="32dp"
-        android:textColor="?android:textColorPrimary"
-        android:hintTextColor="?android:textColorHint" />
+        android:textColor="?android:textColorPrimary"/>
 
     <Button
         android:id="@+id/btnRegister"

@@ -9,14 +9,15 @@
     tools:context=".MainActivity">
 
     <!-- TaskTracker Logo -->
+
+    <!-- Welcome Message -->
     <ImageView
         android:id="@+id/logo"
         android:layout_width="wrap_content"
-        android:layout_height="289dp"
+        android:layout_height="160dp"
         android:layout_marginBottom="24dp"
-        android:src="@drawable/TaskTracker_logo" />
+        android:src="@drawable/tasktracker_logo" />
 
-    <!-- Welcome Message -->
     <TextView
         android:id="@+id/welcome_message"
         android:layout_width="wrap_content"

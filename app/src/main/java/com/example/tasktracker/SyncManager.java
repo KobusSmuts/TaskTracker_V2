@@ -2,19 +2,19 @@ package com.example.tasktracker;
 
 import android.content.Context;
 import android.util.Log;
-import android.widget.Toast;
-
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-
 import java.util.List;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 public class SyncManager {
-    private FirebaseDatabaseService firebaseDatabaseService;
-    private TaskDao taskDao;
-    private ConnectivityChecker connectivityChecker;
-    private MutableLiveData<Boolean> syncStatus = new MutableLiveData<>();
+    private final FirebaseDatabaseService firebaseDatabaseService;
+    private final TaskDao taskDao;
+    private final ConnectivityChecker connectivityChecker;
+    private final MutableLiveData<Boolean> syncStatus = new MutableLiveData<>();
+    private final ExecutorService syncExecutor = Executors.newSingleThreadExecutor();
 
     public SyncManager(Context context, TaskDao taskDao) {
         this.firebaseDatabaseService = new FirebaseDatabaseService();
@@ -28,9 +28,9 @@ public class SyncManager {
 
     public void syncTasks() {
         if (connectivityChecker.isConnected()) {
-            syncFirebaseToRoom();
+            syncExecutor.execute(this::syncFirebaseToRoom);
         } else {
-            syncStatus.setValue(false);
+            syncStatus.postValue(false);
         }
     }
 
@@ -38,32 +38,38 @@ public class SyncManager {
         firebaseDatabaseService.getAllTasks(new FirebaseDatabaseService.FirebaseTasksCallback() {
             @Override
             public void onCallback(List<Task> taskList) {
-                // Check if the taskList is not empty
                 if (taskList != null && !taskList.isEmpty()) {
-                    // Use ExecutorService to run database operations in a background thread
-                    Executors.newSingleThreadExecutor().execute(() -> {
-                        taskDao.insertAll(taskList); // Insert tasks from Firebase to Room
-                        syncStatus.postValue(true); // Update sync status
+                    syncExecutor.execute(() -> {
+                        try {
+                            taskDao.insertAll(taskList);
+                            syncStatus.postValue(true);
+                        } catch (Exception e) {
+                            Log.e("SyncManager", "Error inserting tasks", e);
+                            syncStatus.postValue(false);
+                        }
                     });
                 } else {
-                    syncStatus.postValue(false); // No tasks found to sync
+                    syncStatus.postValue(false);
                 }
             }
 
             @Override
             public void onFailure(Exception e) {
                 Log.e("SyncManager", "Failed to sync tasks from Firebase", e);
-                syncStatus.postValue(false); // Handle failure
+                syncStatus.postValue(false);
             }
         });
     }
 
-//    public void syncRoomToFirebase() {
-//        LiveData<List<Task>> localTasks = taskDao.getAllTasks();
-//        localTasks.observeForever(tasks -> {
-//            for (Task task : tasks) {
-//                firebaseDatabaseService.addTask(task);
-//            }
-//        });
-//    }
+    public void cleanup() {
+        syncExecutor.shutdown();
+        try {
+            if (!syncExecutor.awaitTermination(800, TimeUnit.MILLISECONDS)) {
+                syncExecutor.shutdownNow();
+            }
+        } catch (InterruptedException e) {
+            syncExecutor.shutdownNow();
+            Thread.currentThread().interrupt();
+        }
+    }
 }

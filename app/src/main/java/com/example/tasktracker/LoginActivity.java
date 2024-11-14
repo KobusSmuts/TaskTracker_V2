@@ -16,16 +16,22 @@ public class LoginActivity extends AppCompatActivity {
     private FirebaseAuthService authService;
 
     @Override
-    public void onStart() {
+    protected void onStart() {
         super.onStart();
-        //Check if user already signed in
-        FirebaseUser currentUser = authService.getCurrentUser();
-        if (currentUser != null) {
-            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-            startActivity(intent);
-            finish();
+
+        FirebaseUser user = AuthManager.getCurrentUser();
+        Intent intent;
+        if (user != null) {
+            // User is logged in, continue with app flow
+            intent = new Intent(LoginActivity.this, MainActivity.class);
+        } else {
+            // Redirect to login screen
+            intent = new Intent(this, LoginActivity.class);
         }
+        startActivity(intent);
+        finish();
     }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,7 +50,6 @@ public class LoginActivity extends AppCompatActivity {
             String password = etPassword.getText().toString();
             authService.loginUser(email, password, task -> {
                 if (task.isSuccessful()) {
-
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                     startActivity(intent);
                     finish();
