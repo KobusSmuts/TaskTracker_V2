@@ -7,7 +7,6 @@ import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.Update;
 import androidx.room.Delete;
-import androidx.room.Upsert;
 
 import java.util.List;
 
@@ -31,4 +30,8 @@ public interface TaskDao {
 
     @Query("SELECT * FROM tasks")
     LiveData<List<Task>> getAllTasks();
+
+    @Query("SELECT * FROM tasks WHERE UID = :UID OR employeeEmail = :employeeEmail")
+    Task getTaskForUser(String UID, String employeeEmail);
+
 }
