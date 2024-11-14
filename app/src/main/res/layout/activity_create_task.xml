@@ -3,46 +3,60 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="16dp"
+    android:background="?android:attr/windowBackground"
+    tools:context=".CreateTaskActivity">
 
     <EditText
         android:id="@+id/etTaskTitle"
-        android:layout_width="430dp"
-        android:layout_height="60dp"
-        android:hint="@string/task_title"
-        android:visibility="visible"
-        tools:visibility="visible" />
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Task Title"
+        android:padding="16dp"
+        android:background="@drawable/rounded"
+        android:layout_marginBottom="8dp" />
 
     <EditText
         android:id="@+id/etTaskDescription"
-        android:layout_width="428dp"
-        android:layout_height="60dp"
-        android:hint="@string/task_description"
-        android:visibility="visible" />
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Task Description"
+        android:padding="16dp"
+        android:background="@drawable/rounded"
+        android:layout_marginBottom="8dp" />
 
     <EditText
         android:id="@+id/etEmployeeEmail"
-        android:layout_width="433dp"
-        android:layout_height="68dp"
-        android:hint="@string/employee_email"
-        android:visibility="visible" />
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Employee Email"
+        android:padding="16dp"
+        android:background="@drawable/rounded"
+        android:layout_marginBottom="16dp" />
 
     <Button
         android:id="@+id/btnAddTask"
-        android:layout_width="435dp"
-        android:layout_height="60dp"
-        android:text="@string/add_task" />
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Add Task"
+        android:background="@drawable/rounded"
+        android:backgroundTint="?attr/colorPrimary"
+        android:textColor="?attr/colorOnPrimary"
+        android:layout_marginBottom="8dp" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:layout_width="430dp"
-        android:layout_height="502dp"
-        android:visibility="visible" />
+        android:id="@+id/rvTasks"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        tools:visibility="visible" />
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/btnViewTasks"
         style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-        android:layout_width="440dp"
-        android:layout_height="63dp"
-        android:text="@string/view_tasks" />
-
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/rounded"
+        android:text="View Tasks"
+        android:layout_marginTop="8dp" />
 </LinearLayout>
