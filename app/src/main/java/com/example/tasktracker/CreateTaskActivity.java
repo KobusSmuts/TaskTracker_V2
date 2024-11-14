@@ -10,7 +10,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.rpc.context.AttributeContext;
 
 public class CreateTaskActivity extends AppCompatActivity {
-    private EditText etTaskTitle, etTaskDescription;
+    private EditText etTaskTitle, etTaskDescription, etEmployeeEmail;
     private Button btnAddTask;
     private FirebaseDatabaseService databaseService;
 
@@ -21,7 +21,7 @@ public class CreateTaskActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_task);
 
-        etTaskTitle = findViewById(R.id.employeeEmail);
+        etEmployeeEmail = findViewById(R.id.etEmployeeEmail);
         etTaskTitle = findViewById(R.id.etTaskTitle);
         etTaskDescription = findViewById(R.id.etTaskDescription);
         btnAddTask = findViewById(R.id.btnAddTask);
@@ -30,6 +30,7 @@ public class CreateTaskActivity extends AppCompatActivity {
         btnAddTask.setOnClickListener(view -> {
             FirebaseUser user = firebaseAuthService.getCurrentUser();
             String uid = user.getUid();
+            String employeeEmail = etEmployeeEmail.getText().toString();
             String title = etTaskTitle.getText().toString();
             String description = etTaskDescription.getText().toString();
             Task task = new Task(uid, employeeEmail, title, description, "Not Started");

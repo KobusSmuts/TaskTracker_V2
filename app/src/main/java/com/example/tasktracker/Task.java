@@ -5,11 +5,13 @@ import androidx.room.Entity;
 import androidx.room.ForeignKey;
 import androidx.room.PrimaryKey;
 
+import java.util.Objects;
+
 @Entity (tableName = "tasks")
 public class Task {
     @PrimaryKey
     @NonNull
-    private String uID;
+    private String UID;
     @NonNull
     private String employeeEmail;
     private String name;
@@ -18,13 +20,11 @@ public class Task {
 
     // No-argument constructor required by Firebase
     public Task() {
-        employeeEmail = "";
-        uID = "";
     }
 
     // Constructor with parameters
-    public Task(@NonNull String uID, @NonNull String employeeEmail, String name, String description, String status) {
-        this.uID = uID;
+    public Task(@NonNull String UID, @NonNull String employeeEmail, String name, String description, String status) {
+        this.UID = UID;
         this.employeeEmail = employeeEmail;
         this.name = name;
         this.description = description;
@@ -33,13 +33,14 @@ public class Task {
 
     // Getters and setters
 
+
     @NonNull
-    public String getuID() {
-        return uID;
+    public String getUID() {
+        return UID;
     }
 
-    public void setuID(@NonNull String uID) {
-        this.uID = uID;
+    public void setUID(@NonNull String UID) {
+        this.UID = UID;
     }
 
     @NonNull
@@ -73,6 +74,25 @@ public class Task {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    // Implement equals and hashCode
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true; // Check for reference equality
+        if (o == null || getClass() != o.getClass()) return false; // Check if objects are of the same type
+        Task task = (Task) o;
+        return UID.equals(task.UID) &&
+                employeeEmail.equals(task.employeeEmail) &&
+                Objects.equals(name, task.name) &&
+                Objects.equals(description, task.description) &&
+                Objects.equals(status, task.status);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(UID, employeeEmail, name, description, status);
     }
 }
 

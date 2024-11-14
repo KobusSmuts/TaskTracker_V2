@@ -2,21 +2,16 @@ package com.example.tasktracker;
 
 import android.content.Intent;
 import android.os.Bundle;
+
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-
-import java.util.List;
-
 public class TaskListActivity extends AppCompatActivity {
 
     private TaskViewModel taskViewModel;
-    private RecyclerView recyclerView;
     private TaskAdapter taskAdapter;
 
     @Override
@@ -24,34 +19,39 @@ public class TaskListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_task_list);
 
-        recyclerView = findViewById(R.id.recycler_view);
+        // Set up RecyclerView
+        RecyclerView recyclerView = findViewById(R.id.rvTasks);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
-        taskAdapter = new TaskAdapter(new TaskAdapter.TaskDiff());
+        taskAdapter = new TaskAdapter();
         recyclerView.setAdapter(taskAdapter);
 
-        taskViewModel = new ViewModelProvider(this).get(TaskViewModel.class);
-        taskViewModel.getAllTasks().observe(this, new Observer<List<Task>>() {
-            @Override
-            public void onChanged(List<Task> tasks) {
-                taskAdapter.submitList(tasks);
-            }
+        // Handle task clicks
+        taskAdapter.setOnTaskClickListener(task -> {
+            Intent intent = new Intent(TaskListActivity.this, TaskDetailsActivity.class);
+            intent.putExtra("TASK_ID", task.getUID()); // Pass task ID
+            startActivity(intent);
         });
 
-        FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(view -> {
-            Intent intent = new Intent(TaskListActivity.this, CreateTaskActivity.class);
+        // Initialize ViewModel
+        taskViewModel = new ViewModelProvider(this).get(TaskViewModel.class);
+
+        // Fetch tasks filtered by the current user (e.g., based on UID or email)
+        taskViewModel.getAllTasks().observe(this, tasks -> {
+            taskAdapter.submitList(tasks); // Update adapter with task list
+        });
+
+        // Handle Back Button
+        findViewById(R.id.btnBackToTask).setOnClickListener(view -> {
+            Intent intent = new Intent(this, CreateTaskActivity.class);
             startActivityForResult(intent, 1);
         });
     }
 
-//    @Override
-//    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-//        super.onActivityResult(requestCode, resultCode, data);
-//        if (requestCode == 1 && resultCode == RESULT_OK) {
-//            taskViewModel.refreshTasks(); // Assume you have a method to refresh data in the ViewModel
-//        }
-//    }
-
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 1 && resultCode == RESULT_OK) {
+            taskViewModel.refreshTasks(); // Refresh tasks if returning from CreateTaskActivity
+        }
+    }
 }
-

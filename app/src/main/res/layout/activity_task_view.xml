@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <!-- Task Name -->
+    <TextView
+        android:id="@+id/text_view_task_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Task Name"
+        android:textSize="22sp"
+        android:textColor="?android:attr/textColorPrimary"
+        android:paddingBottom="16dp"
+        android:textStyle="bold" />
+
+    <!-- Task Status -->
+    <TextView
+        android:id="@+id/text_view_task_status"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Task Status"
+        android:textSize="18sp"
+        android:textColor="?android:attr/textColorSecondary"
+        android:paddingBottom="16dp" />
+
+    <!-- Task Description -->
+    <TextView
+        android:id="@+id/text_view_task_description"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Task Description"
+        android:textSize="16sp"
+        android:textColor="?android:attr/textColorPrimary" />
+</LinearLayout>

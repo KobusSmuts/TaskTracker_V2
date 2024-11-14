@@ -25,7 +25,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Button btnSync = findViewById(R.id.sync_button);
-//        Button btnAddTask = findViewById(R.id.btnAddTask);
         Button btnTasks = findViewById(R.id.btnTasks);
         Button btnLogout = findViewById(R.id.btnLogout);
 
@@ -51,12 +50,6 @@ public class MainActivity extends AppCompatActivity {
 
         // Sync tasks when needed
         btnSync.setOnClickListener(view -> syncManager.syncTasks());
-
-//        btnAddTask.setOnClickListener(view -> {
-//            Intent intent = new Intent(MainActivity.this, CreateTaskActivity.class);
-//            startActivity(intent);
-//            finish();
-//        });
 
         btnTasks.setOnClickListener(view -> {
             Intent intent = new Intent(MainActivity.this, TaskListActivity.class);

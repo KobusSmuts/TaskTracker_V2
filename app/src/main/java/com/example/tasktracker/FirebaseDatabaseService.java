@@ -47,7 +47,7 @@ public class FirebaseDatabaseService {
                 for (DataSnapshot taskSnapshot : snapshot.getChildren()) {
                     Task task = taskSnapshot.getValue(Task.class);
                     if (task != null &&
-                            (currentUserUid.equals(task.getuID()) || currentUserEmail.equals(task.getEmployeeEmail()))) {
+                            (currentUserUid.equals(task.getUID()) || currentUserEmail.equals(task.getEmployeeEmail()))) {
                         taskList.add(task);
                     }
                 }
