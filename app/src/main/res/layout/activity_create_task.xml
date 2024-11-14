@@ -11,7 +11,9 @@
         android:id="@+id/etTaskTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Task Title"
+        android:autofillHints=""
+        android:hint="@string/task_title"
+        android:inputType="text"
         android:padding="16dp"
         android:background="@drawable/rounded"
         android:layout_marginBottom="8dp" />
@@ -20,7 +22,9 @@
         android:id="@+id/etTaskDescription"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Task Description"
+        android:autofillHints=""
+        android:hint="@string/task_description"
+        android:inputType="text"
         android:padding="16dp"
         android:background="@drawable/rounded"
         android:layout_marginBottom="8dp" />
@@ -29,7 +33,9 @@
         android:id="@+id/etEmployeeEmail"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Employee Email"
+        android:autofillHints=""
+        android:hint="@string/employee_email"
+        android:inputType="textEmailAddress"
         android:padding="16dp"
         android:background="@drawable/rounded"
         android:layout_marginBottom="16dp" />
@@ -38,7 +44,7 @@
         android:id="@+id/btnAddTask"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Add Task"
+        android:text="@string/add_task"
         android:background="@drawable/rounded"
         android:backgroundTint="?attr/colorPrimary"
         android:textColor="?attr/colorOnPrimary"
@@ -57,7 +63,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/rounded"
-        android:text="View Tasks"
+        android:text="@string/view_tasks"
         android:layout_marginTop="8dp" />
 
     <!-- Home Button -->
@@ -65,7 +71,7 @@
         android:id="@+id/btnHome"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Home"
+        android:text="@string/home"
         android:background="@drawable/rounded"
         android:backgroundTint="?attr/colorPrimary"
         android:textColor="?attr/colorOnPrimary"

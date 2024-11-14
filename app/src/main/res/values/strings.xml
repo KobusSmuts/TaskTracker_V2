@@ -7,4 +7,17 @@
     <string name="view_tasks">View Tasks</string>
     <string name="login">Login</string>
     <string name="register">Register</string>
+    <string name="task_name">Task Name</string>
+    <string name="task_status">Task Status</string>
+    <string name="create_task">Create Task</string>
+    <string name="home">Home</string>
+    <string name="email">Email</string>
+    <string name="company_name">Company Name</string>
+    <string name="username">Username</string>
+    <string name="password">Password</string>
+    <string name="welcome_to_tasktracker">Welcome to TaskTracker!</string>
+    <string name="online_status">Online Status</string>
+    <string name="sync_tasks">Sync Tasks</string>
+    <string name="go_to_tasks">Go to Tasks</string>
+    <string name="logout">Logout</string>
 </resources>

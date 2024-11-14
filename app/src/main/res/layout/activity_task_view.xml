@@ -10,7 +10,7 @@
         android:id="@+id/text_view_task_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Task Name"
+        android:text="@string/task_name"
         android:textSize="22sp"
         android:textColor="?android:attr/textColorPrimary"
         android:paddingBottom="16dp"
@@ -21,7 +21,7 @@
         android:id="@+id/text_view_task_status"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Task Status"
+        android:text="@string/task_status"
         android:textSize="18sp"
         android:textColor="?android:attr/textColorSecondary"
         android:paddingBottom="16dp" />
@@ -31,7 +31,7 @@
         android:id="@+id/text_view_task_description"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Task Description"
+        android:text="@string/task_description"
         android:textSize="16sp"
         android:textColor="?android:attr/textColorPrimary" />
 </LinearLayout>
