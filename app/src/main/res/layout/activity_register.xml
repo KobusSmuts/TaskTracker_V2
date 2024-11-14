@@ -1,10 +1,12 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center"
     android:orientation="vertical"
     android:padding="16dp"
-    android:background="?android:attr/windowBackground">
+    android:background="?android:windowBackground"
+    tools:context=".MainActivity">
 
     <EditText
         android:id="@+id/etEmail"
@@ -14,7 +16,9 @@
         android:inputType="textEmailAddress"
         android:padding="16dp"
         android:background="@drawable/rounded"
-        android:layout_marginBottom="16dp" />
+        android:layout_marginBottom="16dp"
+        android:textColor="?android:textColorPrimary"
+        android:hintTextColor="?android:textColorHint" />
 
     <EditText
         android:id="@+id/etCompanyName"
@@ -23,7 +27,9 @@
         android:hint="Company Name"
         android:padding="16dp"
         android:background="@drawable/rounded"
-        android:layout_marginBottom="16dp" />
+        android:layout_marginBottom="16dp"
+        android:textColor="?android:textColorPrimary"
+        android:hintTextColor="?android:textColorHint" />
 
     <EditText
         android:id="@+id/etUsername"
@@ -32,7 +38,9 @@
         android:hint="Username"
         android:padding="16dp"
         android:background="@drawable/rounded"
-        android:layout_marginBottom="16dp" />
+        android:layout_marginBottom="16dp"
+        android:textColor="?android:textColorPrimary"
+        android:hintTextColor="?android:textColorHint" />
 
     <EditText
         android:id="@+id/etPassword"
@@ -42,7 +50,9 @@
         android:inputType="textPassword"
         android:padding="16dp"
         android:background="@drawable/rounded"
-        android:layout_marginBottom="32dp" />
+        android:layout_marginBottom="32dp"
+        android:textColor="?android:textColorPrimary"
+        android:hintTextColor="?android:textColorHint" />
 
     <Button
         android:id="@+id/btnRegister"
@@ -53,4 +63,14 @@
         android:backgroundTint="?attr/colorPrimary"
         android:textColor="?attr/colorOnPrimary"
         android:layout_marginBottom="16dp"/>
+
+    <Button
+        android:id="@+id/btnLogin"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Login"
+        android:background="@drawable/rounded"
+        android:textColor="?attr/colorPrimary"
+        android:layout_marginBottom="16dp" />
 </LinearLayout>
