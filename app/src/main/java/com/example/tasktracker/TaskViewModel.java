@@ -1,55 +1,77 @@
 package com.example.tasktracker;
 
 import android.app.Application;
-
+import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
-
+import androidx.lifecycle.MutableLiveData;
 import java.util.List;
 
 public class TaskViewModel extends AndroidViewModel {
+    private final TaskRepository taskRepository;
+    private final SyncManager syncManager;
+    private final MutableLiveData<Boolean> isLoading = new MutableLiveData<>(false);
 
-    private TaskRepository taskRepository;
-    private LiveData<List<Task>> allTasks;
-
-    // Constructor
     public TaskViewModel(@NonNull Application application) {
         super(application);
         taskRepository = new TaskRepository(application);
 
-        // Assuming TaskRepository is already filtering tasks based on UID and email
-        allTasks = taskRepository.getAllTasks();  // Get all tasks from the repository
+        if (application == null) {
+            Log.e("SyncManager", "Application is null");
+        }
+        if (taskRepository.getTaskDao() == null) {
+            Log.e("SyncManager", "TaskDao is null");
+        }
+
+        syncManager = new SyncManager(application, taskRepository.getTaskDao());
     }
 
-    // Method to get all tasks for the current user (UID or email)
+    @Override
+    protected void onCleared() {
+        super.onCleared();
+        if (syncManager != null) {
+            syncManager.cleanup();
+        }
+        taskRepository.cleanup();
+    }
+
+    public LiveData<Boolean> getIsLoading() {
+        return isLoading;
+    }
+
     public LiveData<List<Task>> getAllTasks() {
-        return allTasks;
+        LiveData<List<Task>> tasksFromRoom = getAllTasksFromRoom();
+        if (tasksFromRoom.getValue() == null || tasksFromRoom.getValue().isEmpty()) {
+            syncTasksFromFirebase();
+        }
+        return tasksFromRoom;
     }
 
-    // Insert a new task into the repository
-    public void insertTask(Task task) {
-        taskRepository.insert(task);
+    public LiveData<List<Task>> getAllTasksFromRoom() {
+        return taskRepository.getAllTasksFromRoom();
     }
 
-    // Update an existing task
-    public void updateTask(Task task) {
-        taskRepository.update(task);
+    private void syncTasksFromFirebase() {
+        if (syncManager != null) {
+            isLoading.setValue(true);
+            syncManager.syncTasks();
+            syncManager.getSyncStatus().observeForever(success -> {
+                isLoading.setValue(false);
+                if (!success) {
+                    Log.e("TaskViewModel", "Failed to sync tasks from Firebase");
+                }
+            });
+        } else {
+            Log.e("TaskViewModel", "SyncManager not initialized");
+        }
     }
 
-    // Delete a specific task
-    public void deleteTask(Task task) {
-        taskRepository.delete(task);
-    }
-
-    // Delete all tasks
-    public void deleteAllTasks() {
-        taskRepository.deleteAllTasks();
-    }
-
-    // Refresh tasks (re-query or reload data)
-    public void refreshTasks() {
-        // Re-fetch tasks by calling the repository method to get data again
-        allTasks = taskRepository.getAllTasks();
+    public LiveData<Task> getTaskById(long taskID) {
+        LiveData<Task> taskFromRoom = taskRepository.getTaskById(taskID, getApplication());
+        if (taskFromRoom.getValue() == null && syncManager != null) {
+            syncTasksFromFirebase();
+        }
+        return taskFromRoom;
     }
 }

@@ -58,7 +58,6 @@ public class CreateTaskActivity extends AppCompatActivity {
         } else {
             btnAddTask.setEnabled(false);
             Toast.makeText(this, "User not authenticated", Toast.LENGTH_SHORT).show();
-            finish();
         }
     }
 
@@ -75,7 +74,6 @@ public class CreateTaskActivity extends AppCompatActivity {
                     Toast.makeText(CreateTaskActivity.this,
                             "Task created successfully", Toast.LENGTH_SHORT).show();
                     setResult(RESULT_OK);
-                    finish();
                 });
             });
         }

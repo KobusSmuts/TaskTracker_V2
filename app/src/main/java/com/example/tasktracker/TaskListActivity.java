@@ -1,10 +1,11 @@
 package com.example.tasktracker;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
-
+import android.widget.ProgressBar;
+import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
@@ -12,56 +13,53 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class TaskListActivity extends AppCompatActivity {
-
     private TaskViewModel taskViewModel;
+    private Button btnCreateTask, btnHome;
     private TaskAdapter taskAdapter;
+    private ProgressBar progressBar;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_task_list);
 
-        Button btnCreateTask = findViewById(R.id.btnCreateTask);
-
-        // Set up RecyclerView
+        // Initialize views
         RecyclerView recyclerView = findViewById(R.id.rvTasks);
+        btnCreateTask = findViewById(R.id.btnCreateTask);
+        btnHome = findViewById(R.id.btnBackToTask);
+
+        // Setup RecyclerView
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         taskAdapter = new TaskAdapter();
         recyclerView.setAdapter(taskAdapter);
 
-        // Handle task clicks
+        // Setup click listener
         taskAdapter.setOnTaskClickListener(task -> {
             Intent intent = new Intent(TaskListActivity.this, TaskDetailsActivity.class);
-            intent.putExtra("TASK_ID", task.getUID()); // Pass task ID
+            intent.putExtra("TASK_ID", task.getTaskID());
             startActivity(intent);
         });
 
         // Initialize ViewModel
         taskViewModel = new ViewModelProvider(this).get(TaskViewModel.class);
 
-        // Fetch tasks filtered by the current user (e.g., based on UID or email)
+        // Observe tasks
         taskViewModel.getAllTasks().observe(this, tasks -> {
-            taskAdapter.submitList(tasks); // Update adapter with task list
+            taskAdapter.submitList(tasks);
         });
 
-        // Handle Back Button
-        findViewById(R.id.btnBackToTask).setOnClickListener(view -> {
-            Intent intent = new Intent(this, MainActivity.class);
-            startActivityForResult(intent, 1);
+        // Set click listeners
+        btnCreateTask.setOnClickListener(v -> {
+            Intent intent = new Intent(TaskListActivity.this, CreateTaskActivity.class);
+            startActivity(intent);
+            finish();
         });
 
-        // handel add button
-        btnCreateTask.setOnClickListener(view -> {
-            Intent intent = new Intent(this, CreateTaskActivity.class);
-            startActivityForResult(intent, 1);
+        btnHome.setOnClickListener(v -> {
+            Intent intent = new Intent(TaskListActivity.this, MainActivity.class);
+            startActivity(intent);
+            finish();
         });
-    }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 1 && resultCode == RESULT_OK) {
-            taskViewModel.refreshTasks(); // Refresh tasks if returning from CreateTaskActivity
-        }
     }
 }

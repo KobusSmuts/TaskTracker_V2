@@ -12,45 +12,62 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 public class TaskRepository {
-    private final TaskDao taskDao;
+    private TaskDao taskDao;
     private final LiveData<List<Task>> allTasks;
     private static final int THREAD_POOL_SIZE = 4;
     private final ExecutorService repositoryExecutor;
     private final Handler mainHandler;
 
     public TaskRepository(Application application) {
-        TaskDatabase db = TaskDatabase.getDatabase(application);
+        AppDatabase db = AppDatabase.getInstance(application);
         taskDao = db.taskDao();
         allTasks = taskDao.getAllTasks();
         repositoryExecutor = Executors.newFixedThreadPool(THREAD_POOL_SIZE);
         mainHandler = new Handler(Looper.getMainLooper());
     }
 
-    public LiveData<List<Task>> getAllTasks() {
+    public TaskDao getTaskDao() {
+        return taskDao;
+    }
+
+    public LiveData<List<Task>> getAllTasksFromRoom() {
         return allTasks;
     }
 
-    public void getTaskById(String taskId, OnTaskRetrievedCallback callback) {
+    public LiveData<Task> getTaskById(long taskID, Application application) {
+        LiveData<Task> taskLiveData = null;
+        try {
+            FirebaseUser user = AuthManager.getCurrentUser();
+            taskLiveData = taskDao.observeTaskById(taskID);
+        } catch (Exception e) {
+            Log.e("TaskRepository", "Error getting task by ID", e);
+        }
+        return taskLiveData;
+    }
+
+    public void insert(Task task) {
         repositoryExecutor.execute(() -> {
-            Task task = null;
             try {
-                FirebaseUser user = AuthManager.getCurrentUser();
-                task = taskDao.getTaskForUser(user.getUid(), user.getEmail());
+                long id = taskDao.insert(task);  // Capture the generated ID
+                task.setTaskID(id);  // Set the generated ID back to the task
             } catch (Exception e) {
-                Log.e("TaskRepository", "Error getting task by ID", e);
-            } finally {
-                Task finalTask = task;
-                mainHandler.post(() -> callback.onTaskRetrieved(finalTask));
+                Log.e("TaskRepository", "Error inserting task", e);
             }
         });
     }
 
-    public void insert(Task task) {
-        repositoryExecutor.execute(() -> taskDao.insert(task));
-    }
-
     public void insertTasks(List<Task> tasks) {
-        repositoryExecutor.execute(() -> taskDao.insertAll(tasks));
+        repositoryExecutor.execute(() -> {
+            try {
+                List<Long> ids = taskDao.insertAll(tasks);  // Modify TaskDao to return List<Long>
+                // Update tasks with their generated IDs if needed
+                for (int i = 0; i < tasks.size(); i++) {
+                    tasks.get(i).setTaskID(ids.get(i));
+                }
+            } catch (Exception e) {
+                Log.e("TaskRepository", "Error inserting tasks", e);
+            }
+        });
     }
 
     public void update(Task task) {

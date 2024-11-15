@@ -44,6 +44,12 @@ public class LoginActivity extends AppCompatActivity {
         btnLogin.setOnClickListener(view -> {
             String email = etUsername.getText().toString();
             String password = etPassword.getText().toString();
+
+            if (email.isEmpty() || password.isEmpty()) {
+                Toast.makeText(LoginActivity.this, "Please enter email and password", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
             Log.d(TAG, "btnLogin clicked: email=" + email);
 
             executorService.execute(() -> {
@@ -58,7 +64,7 @@ public class LoginActivity extends AppCompatActivity {
                     } else {
                         Log.d(TAG, "loginUser: failed", task.getException());
                         mainThreadHandler.post(() ->
-                                Toast.makeText(LoginActivity.this, "Login failed!", Toast.LENGTH_SHORT).show());
+                                Toast.makeText(LoginActivity.this, "Login failed! Please enter valid credentials!", Toast.LENGTH_SHORT).show());
                     }
                 });
             });
