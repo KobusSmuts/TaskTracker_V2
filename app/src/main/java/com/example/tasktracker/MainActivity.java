@@ -6,19 +6,14 @@ import android.os.Handler;
 import android.os.Looper;
 import android.widget.Button;
 import android.widget.Toast;
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
-
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class MainActivity extends AppCompatActivity {
-
     private static final String TAG = "MainActivity";
     private SyncManager syncManager;
-    private AppDatabase db;
-    private TaskDao taskDao;
     private ExecutorService executorService;
     private Handler mainThreadHandler;
 
@@ -31,46 +26,28 @@ public class MainActivity extends AppCompatActivity {
         Button btnTasks = findViewById(R.id.btnTasks);
         Button btnLogout = findViewById(R.id.btnLogout);
 
-        // Initialize Room database and DAO
-        db = AppDatabase.getInstance(this);
-        taskDao = db.taskDao();
-
-        // Initialize ExecutorService and Handler
         executorService = Executors.newSingleThreadExecutor();
         mainThreadHandler = new Handler(Looper.getMainLooper());
 
-        // Initialize SyncManager
-        syncManager = new SyncManager(this, taskDao);
-        syncManager.getSyncStatus().observe(this, new Observer<Boolean>() {
-            @Override
-            public void onChanged(Boolean syncSuccessful) {
-                mainThreadHandler.post(() -> {
-                    if (syncSuccessful) {
-                        // Notify user of success
-                        Toast.makeText(MainActivity.this, "Sync successful", Toast.LENGTH_SHORT).show();
-                    } else {
-                        // Handle sync failure
-                        Toast.makeText(MainActivity.this, "Sync failed", Toast.LENGTH_SHORT).show();
-                    }
-                });
+        syncManager = new SyncManager(this, AppDatabase.getInstance(this).taskDao());
+
+        syncManager.getSyncStatus().observe(this, syncSuccessful -> {
+            if (syncSuccessful != null) {
+                String message = syncSuccessful ? "Sync successful" : "Sync failed";
+                Toast.makeText(MainActivity.this, message, Toast.LENGTH_SHORT).show();
             }
         });
 
-        // Sync tasks when the sync button is pressed
         btnSync.setOnClickListener(view -> {
-            executorService.execute(() -> {
-                syncManager.syncTasks();
-            });
+            Toast.makeText(this, "Starting sync...", Toast.LENGTH_SHORT).show();
+            executorService.execute(() -> syncManager.syncTasks());
         });
 
-        // Navigate to TaskListActivity
         btnTasks.setOnClickListener(view -> {
             Intent intent = new Intent(MainActivity.this, TaskListActivity.class);
             startActivity(intent);
-            finish();
         });
 
-        // Logout functionality
         btnLogout.setOnClickListener(view -> {
             executorService.execute(() -> {
                 AuthManager.signOut();
@@ -89,5 +66,6 @@ public class MainActivity extends AppCompatActivity {
         if (executorService != null) {
             executorService.shutdown();
         }
+        syncManager.cleanup();
     }
 }

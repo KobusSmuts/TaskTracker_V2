@@ -1,6 +1,7 @@
 package com.example.tasktracker;
 
 import androidx.annotation.NonNull;
+import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 import java.util.Objects;
@@ -18,6 +19,7 @@ public class Task {
 
     private String name;
     private String description;
+    @ColumnInfo(defaultValue = "1")
     private int status;
 
     // No-argument constructor required by Firebase
