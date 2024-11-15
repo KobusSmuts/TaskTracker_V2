@@ -68,7 +68,7 @@ public class TaskAdapter extends ListAdapter<Task, TaskAdapter.TaskViewHolder> {
 
         public void bind(Task task) {
             textViewTaskName.setText(task.getName());
-            spnViewTaskStatus.setText(task.getStatus());
+            spnViewTaskStatus.setSelection(1);
         }
     }
 
