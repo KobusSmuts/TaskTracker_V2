@@ -17,7 +17,6 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
     private SyncManager syncManager;
-    private FirebaseAuthService authService;
     private AppDatabase db;
     private TaskDao taskDao;
     private ExecutorService executorService;
@@ -27,6 +26,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         Button btnSync = findViewById(R.id.sync_button);
         Button btnTasks = findViewById(R.id.btnTasks);
         Button btnLogout = findViewById(R.id.btnLogout);
@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
             public void onChanged(Boolean syncSuccessful) {
                 mainThreadHandler.post(() -> {
                     if (syncSuccessful) {
-                        // Update UI or notify user of success
+                        // Notify user of success
                         Toast.makeText(MainActivity.this, "Sync successful", Toast.LENGTH_SHORT).show();
                     } else {
                         // Handle sync failure
@@ -56,15 +56,21 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        // Sync tasks when needed
-        btnSync.setOnClickListener(view -> executorService.execute(syncManager::syncTasks));
+        // Sync tasks when the sync button is pressed
+        btnSync.setOnClickListener(view -> {
+            executorService.execute(() -> {
+                syncManager.syncTasks();
+            });
+        });
 
+        // Navigate to TaskListActivity
         btnTasks.setOnClickListener(view -> {
             Intent intent = new Intent(MainActivity.this, TaskListActivity.class);
             startActivity(intent);
             finish();
         });
 
+        // Logout functionality
         btnLogout.setOnClickListener(view -> {
             executorService.execute(() -> {
                 AuthManager.signOut();

@@ -5,7 +5,6 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 import androidx.lifecycle.LiveData;
-import com.google.firebase.auth.FirebaseUser;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -21,7 +20,7 @@ public class TaskRepository {
     public TaskRepository(Application application) {
         AppDatabase db = AppDatabase.getInstance(application);
         taskDao = db.taskDao();
-        allTasks = taskDao.getAllTasks();
+        allTasks = taskDao.getAllTasks(); // Fetch tasks from Room (local DB)
         repositoryExecutor = Executors.newFixedThreadPool(THREAD_POOL_SIZE);
         mainHandler = new Handler(Looper.getMainLooper());
     }
@@ -30,14 +29,16 @@ public class TaskRepository {
         return taskDao;
     }
 
+    // Get all tasks from Room (local DB)
     public LiveData<List<Task>> getAllTasksFromRoom() {
-        return allTasks;
+        return allTasks; // Returns tasks from the local Room database
     }
 
-    public LiveData<Task> getTaskById(long taskID, Application application) {
+    // Get task by ID from Room (local DB)
+    public LiveData<Task> getTaskById(long taskID) {
         LiveData<Task> taskLiveData = null;
         try {
-            FirebaseUser user = AuthManager.getCurrentUser();
+            // Only fetch from local Room database, no online sync
             taskLiveData = taskDao.observeTaskById(taskID);
         } catch (Exception e) {
             Log.e("TaskRepository", "Error getting task by ID", e);
@@ -45,10 +46,11 @@ public class TaskRepository {
         return taskLiveData;
     }
 
+    // Insert a new task into Room (local DB)
     public void insert(Task task) {
         repositoryExecutor.execute(() -> {
             try {
-                long id = taskDao.insert(task);  // Capture the generated ID
+                long id = taskDao.insert(task);  // Insert the task into the local DB
                 task.setTaskID(id);  // Set the generated ID back to the task
             } catch (Exception e) {
                 Log.e("TaskRepository", "Error inserting task", e);
@@ -56,10 +58,11 @@ public class TaskRepository {
         });
     }
 
+    // Insert a list of tasks into Room (local DB)
     public void insertTasks(List<Task> tasks) {
         repositoryExecutor.execute(() -> {
             try {
-                List<Long> ids = taskDao.insertAll(tasks);  // Modify TaskDao to return List<Long>
+                List<Long> ids = taskDao.insertAll(tasks);  // Insert tasks into the local DB
                 // Update tasks with their generated IDs if needed
                 for (int i = 0; i < tasks.size(); i++) {
                     tasks.get(i).setTaskID(ids.get(i));
@@ -70,30 +73,35 @@ public class TaskRepository {
         });
     }
 
+    // Update an existing task in Room (local DB)
     public void update(Task task) {
-        repositoryExecutor.execute(() -> taskDao.update(task));
+        repositoryExecutor.execute(() -> taskDao.update(task)); // Update the task in the local DB
     }
 
+    // Delete a task from Room (local DB)
     public void delete(Task task) {
-        repositoryExecutor.execute(() -> taskDao.delete(task));
+        repositoryExecutor.execute(() -> taskDao.delete(task)); // Delete the task from the local DB
     }
 
+    // Delete a task asynchronously from Room (local DB)
     public void deleteTaskAsync(Task task, Runnable onComplete) {
         repositoryExecutor.execute(() -> {
             try {
-                taskDao.delete(task);
+                taskDao.delete(task); // Delete task from local DB
             } catch (Exception e) {
                 Log.e("TaskRepository", "Error deleting task", e);
             } finally {
-                mainHandler.post(onComplete);
+                mainHandler.post(onComplete); // Notify completion
             }
         });
     }
 
+    // Delete all tasks from Room (local DB)
     public void deleteAllTasks() {
-        repositoryExecutor.execute(taskDao::deleteAll);
+        repositoryExecutor.execute(taskDao::deleteAll); // Delete all tasks from the local DB
     }
 
+    // Cleanup repository resources
     public void cleanup() {
         repositoryExecutor.shutdown();
         try {

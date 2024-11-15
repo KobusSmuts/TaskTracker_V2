@@ -26,7 +26,7 @@ public class TaskAdapter extends ListAdapter<Task, TaskAdapter.TaskViewHolder> {
     @Override
     public TaskViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.activity_task_view, parent, false);
+                .inflate(R.layout.task_list_layout, parent, false);
         return new TaskViewHolder(itemView);
     }
 
@@ -48,12 +48,10 @@ public class TaskAdapter extends ListAdapter<Task, TaskAdapter.TaskViewHolder> {
      */
     class TaskViewHolder extends RecyclerView.ViewHolder {
         private final TextView textViewTaskName;
-        private Spinner spnViewTaskStatus;
 
         public TaskViewHolder(@NonNull View itemView) {
             super(itemView);
             textViewTaskName = itemView.findViewById(R.id.text_view_task_name);
-            spnViewTaskStatus = itemView.findViewById(R.id.spinner_task_status);
 
             // Handle item click
             itemView.setOnClickListener(v -> {
@@ -68,7 +66,6 @@ public class TaskAdapter extends ListAdapter<Task, TaskAdapter.TaskViewHolder> {
 
         public void bind(Task task) {
             textViewTaskName.setText(task.getName());
-            spnViewTaskStatus.setSelection(1);
         }
     }
 

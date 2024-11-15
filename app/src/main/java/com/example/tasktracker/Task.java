@@ -18,14 +18,14 @@ public class Task {
 
     private String name;
     private String description;
-    private String status;
+    private int status;
 
     // No-argument constructor required by Firebase
     public Task() {
     }
 
     // Constructor with parameters
-    public Task(@NonNull String UID, @NonNull String employeeEmail, String name, String description, String status) {
+    public Task(@NonNull String UID, @NonNull String employeeEmail, String name, String description, int status) {
         this.UID = UID;
         this.employeeEmail = employeeEmail;
         this.name = name;
@@ -77,11 +77,11 @@ public class Task {
         this.description = description;
     }
 
-    public String getStatus() {
+    public int getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(int status) {
         this.status = status;
     }
 

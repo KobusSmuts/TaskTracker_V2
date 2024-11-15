@@ -21,8 +21,8 @@
     <string name="go_to_tasks">Go to Tasks</string>
     <string name="logout">Logout</string>
     <string-array name="task_status_array">
-        <item>Completed</item>
         <item>To Do</item>
         <item>In Progress</item>
+        <item>Completed</item>
     </string-array>
 </resources>

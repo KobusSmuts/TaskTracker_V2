@@ -68,7 +68,7 @@ public class CreateTaskActivity extends AppCompatActivity {
 
         if (validateInput(employeeEmail, title, description)) {
             taskCreationExecutor.execute(() -> {
-                Task task = new Task(user.getUid(), employeeEmail, title, description, "Not Started");
+                Task task = new Task(user.getUid(), employeeEmail, title, description, 1);
                 databaseService.addTask(task);
                 mainHandler.post(() -> {
                     Toast.makeText(CreateTaskActivity.this,

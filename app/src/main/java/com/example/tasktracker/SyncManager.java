@@ -14,6 +14,7 @@ public class SyncManager {
     private final TaskDao taskDao;
     private final ConnectivityChecker connectivityChecker;
     private final MutableLiveData<Boolean> syncStatus = new MutableLiveData<>();
+    private final MutableLiveData<String> syncError = new MutableLiveData<>();
     private final ExecutorService syncExecutor = Executors.newSingleThreadExecutor();
 
     public SyncManager(Context context, TaskDao taskDao) {
@@ -26,30 +27,42 @@ public class SyncManager {
         return syncStatus;
     }
 
+    public LiveData<String> getSyncError() {
+        return syncError;
+    }
+
     public void syncTasks() {
         if (connectivityChecker.isConnected()) {
             syncExecutor.execute(this::syncFirebaseToRoom);
         } else {
             syncStatus.postValue(false);
+            syncError.postValue("No internet connection.");
         }
     }
 
     private void syncFirebaseToRoom() {
+        Log.d("SyncManager", "syncFirebaseToRoom() entered");
         firebaseDatabaseService.getAllTasks(new FirebaseDatabaseService.FirebaseTasksCallback() {
             @Override
             public void onCallback(List<Task> taskList) {
                 if (taskList != null && !taskList.isEmpty()) {
-                    syncExecutor.execute(() -> {
-                        try {
-                            taskDao.insertAll(taskList);
-                            syncStatus.postValue(true);
-                        } catch (Exception e) {
-                            Log.e("SyncManager", "Error inserting tasks", e);
-                            syncStatus.postValue(false);
-                        }
-                    });
+                    Log.d("SyncManager", "syncFirebaseToRoom: " + taskList.size() + " tasks found");
+                    if (!taskList.isEmpty()) {
+                        syncExecutor.execute(() -> {
+                            taskDao.deleteAll(); // Clear existing data before inserting new data
+                            try {
+                                taskDao.insertAll(taskList); // Optimize for batch inserts if needed
+                                syncStatus.postValue(true);
+                            } catch (Exception e) {
+                                Log.e("SyncManager", "Error inserting tasks", e);
+                                syncStatus.postValue(false);
+                                syncError.postValue("Database error: " + e.getMessage());
+                            }
+                        });
+                    }
                 } else {
                     syncStatus.postValue(false);
+                    syncError.postValue("No tasks available to sync.");
                 }
             }
 
@@ -57,6 +70,7 @@ public class SyncManager {
             public void onFailure(Exception e) {
                 Log.e("SyncManager", "Failed to sync tasks from Firebase", e);
                 syncStatus.postValue(false);
+                syncError.postValue("Sync failed: " + e.getMessage());
             }
         });
     }
@@ -64,7 +78,7 @@ public class SyncManager {
     public void cleanup() {
         syncExecutor.shutdown();
         try {
-            if (!syncExecutor.awaitTermination(800, TimeUnit.MILLISECONDS)) {
+            if (!syncExecutor.awaitTermination(5, TimeUnit.SECONDS)) {
                 syncExecutor.shutdownNow();
             }
         } catch (InterruptedException e) {

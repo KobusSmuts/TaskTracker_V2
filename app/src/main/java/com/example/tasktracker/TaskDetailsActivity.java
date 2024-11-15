@@ -43,7 +43,7 @@ public class TaskDetailsActivity extends AppCompatActivity {
                     textViewTaskName.setText(task.getName());
                     textViewTaskDescription.setText(task.getDescription());
                     // Set the spinner selection based on the task status
-                    int statusPosition = adapter.getPosition(task.getStatus());
+                    int statusPosition = task.getStatus();
                     spnViewTaskStatus.setSelection(statusPosition);
                 }
             });
