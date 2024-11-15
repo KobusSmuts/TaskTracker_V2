@@ -52,6 +52,8 @@ dependencies {
     // Lifecycle dependencies for ViewModel and LiveData
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.8.7")
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.7")
+    implementation("androidx.activity:activity-ktx:1.8.0")
+    implementation("androidx.constraintlayout:constraintlayout:2.1.4")
 
     // Testing dependencies
     testImplementation("junit:junit:4.13.2")

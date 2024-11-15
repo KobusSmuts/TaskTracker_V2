@@ -2,6 +2,7 @@ package com.example.tasktracker;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -9,6 +10,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 public class TaskDetailsActivity extends AppCompatActivity {
     private TextView textViewTaskName, textViewTaskStatus, textViewTaskDescription;
+    private Spinner spnViewTaskStatus;
     private TaskViewModel taskViewModel;
 
     @Override
@@ -18,7 +20,7 @@ public class TaskDetailsActivity extends AppCompatActivity {
 
         // Initialize TextViews
         textViewTaskName = findViewById(R.id.text_view_task_name);
-        textViewTaskStatus = findViewById(R.id.text_view_task_status);
+        spnViewTaskStatus = findViewById(R.id.spinner_task_status);
         textViewTaskDescription = findViewById(R.id.text_view_task_description);
 
         // Get task ID passed from TaskListActivity

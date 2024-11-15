@@ -3,6 +3,7 @@ package com.example.tasktracker;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -47,12 +48,12 @@ public class TaskAdapter extends ListAdapter<Task, TaskAdapter.TaskViewHolder> {
      */
     class TaskViewHolder extends RecyclerView.ViewHolder {
         private final TextView textViewTaskName;
-        private final TextView textViewTaskStatus;
+        private Spinner spnViewTaskStatus;
 
         public TaskViewHolder(@NonNull View itemView) {
             super(itemView);
             textViewTaskName = itemView.findViewById(R.id.text_view_task_name);
-            textViewTaskStatus = itemView.findViewById(R.id.text_view_task_status);
+            spnViewTaskStatus = itemView.findViewById(R.id.spinner_task_status);
 
             // Handle item click
             itemView.setOnClickListener(v -> {
@@ -67,7 +68,7 @@ public class TaskAdapter extends ListAdapter<Task, TaskAdapter.TaskViewHolder> {
 
         public void bind(Task task) {
             textViewTaskName.setText(task.getName());
-            textViewTaskStatus.setText(task.getStatus());
+            spnViewTaskStatus.setText(task.getStatus());
         }
     }
 
