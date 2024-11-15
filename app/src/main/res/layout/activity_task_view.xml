@@ -6,7 +6,6 @@
     android:padding="16dp"
     android:background="?android:attr/windowBackground">
 
-    <!-- Task Name -->
     <TextView
         android:id="@+id/text_view_task_name"
         android:layout_width="match_parent"
