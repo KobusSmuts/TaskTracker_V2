@@ -2,6 +2,7 @@ package com.example.tasktracker;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -9,7 +10,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
 public class TaskDetailsActivity extends AppCompatActivity {
-    private TextView textViewTaskName, textViewTaskStatus, textViewTaskDescription;
+    private TextView textViewTaskName, textViewTaskDescription;
     private Spinner spnViewTaskStatus;
     private TaskViewModel taskViewModel;
 
@@ -18,10 +19,16 @@ public class TaskDetailsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_task_view);
 
-        // Initialize TextViews
+        // Initialize TextViews and Spinner
         textViewTaskName = findViewById(R.id.text_view_task_name);
         spnViewTaskStatus = findViewById(R.id.spinner_task_status);
         textViewTaskDescription = findViewById(R.id.text_view_task_description);
+
+        // Set up spinner with task statuses
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+                R.array.task_status_array, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spnViewTaskStatus.setAdapter(adapter);
 
         // Get task ID passed from TaskListActivity
         Intent intent = getIntent();
@@ -34,8 +41,10 @@ public class TaskDetailsActivity extends AppCompatActivity {
             taskViewModel.getTaskById(taskId).observe(this, task -> {
                 if (task != null) {
                     textViewTaskName.setText(task.getName());
-                    textViewTaskStatus.setText(task.getStatus());
                     textViewTaskDescription.setText(task.getDescription());
+                    // Set the spinner selection based on the task status
+                    int statusPosition = adapter.getPosition(task.getStatus());
+                    spnViewTaskStatus.setSelection(statusPosition);
                 }
             });
         }
