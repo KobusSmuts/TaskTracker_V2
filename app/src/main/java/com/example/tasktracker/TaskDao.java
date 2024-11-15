@@ -12,12 +12,11 @@ import java.util.List;
 
 @Dao
 public interface TaskDao {
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    long insert(Task task);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insert(Task task);
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insertAll(List<Task> tasks);
+    List<Long> insertAll(List<Task> tasks);
 
     @Update
     void update(Task task);
@@ -31,7 +30,9 @@ public interface TaskDao {
     @Query("SELECT * FROM tasks")
     LiveData<List<Task>> getAllTasks();
 
-    @Query("SELECT * FROM tasks WHERE UID = :UID OR employeeEmail = :employeeEmail")
-    Task getTaskForUser(String UID, String employeeEmail);
+    @Query("SELECT * FROM tasks WHERE (uid = :uid OR employeeEmail = :employeeEmail) AND name = :name")
+    Task getTaskById(String uid, String employeeEmail, String name);
 
+    @Query("SELECT * FROM tasks WHERE uid = :taskId")
+    LiveData<Task> observeTaskById(long taskId);
 }

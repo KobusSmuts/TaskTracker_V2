@@ -5,10 +5,11 @@ import android.os.Bundle;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 
 public class TaskDetailsActivity extends AppCompatActivity {
     private TextView textViewTaskName, textViewTaskStatus, textViewTaskDescription;
-    private TaskRepository taskRepository;
+    private TaskViewModel taskViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,20 +23,18 @@ public class TaskDetailsActivity extends AppCompatActivity {
 
         // Get task ID passed from TaskListActivity
         Intent intent = getIntent();
-        String taskId = intent.getStringExtra("TASK_ID");
+        long taskId = intent.getLongExtra("TASK_ID", 0L);
 
-        taskRepository = new TaskRepository(getApplication());
+        // Initialize ViewModel
+        taskViewModel = new ViewModelProvider(this).get(TaskViewModel.class);
 
-        if (taskId != null) {
-            taskRepository.getTaskById(taskId, task -> {
-                // Set the task details to the UI on the main thread
-                runOnUiThread(() -> {
-                    if (task != null) {
-                        textViewTaskName.setText(task.getName());
-                        textViewTaskStatus.setText(task.getStatus());
-                        textViewTaskDescription.setText(task.getDescription());
-                    }
-                });
+        if (taskId > 0) {
+            taskViewModel.getTaskById(taskId).observe(this, task -> {
+                if (task != null) {
+                    textViewTaskName.setText(task.getName());
+                    textViewTaskStatus.setText(task.getStatus());
+                    textViewTaskDescription.setText(task.getDescription());
+                }
             });
         }
     }
