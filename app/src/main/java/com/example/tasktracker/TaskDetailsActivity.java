@@ -3,6 +3,7 @@ package com.example.tasktracker;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -12,6 +13,8 @@ import androidx.lifecycle.ViewModelProvider;
 public class TaskDetailsActivity extends AppCompatActivity {
     private TextView textViewTaskName, textViewTaskDescription;
     private Spinner spnViewTaskStatus;
+
+    private Button btnApply, btnBack;
     private TaskViewModel taskViewModel;
 
     @Override
@@ -23,6 +26,8 @@ public class TaskDetailsActivity extends AppCompatActivity {
         textViewTaskName = findViewById(R.id.text_view_task_name);
         spnViewTaskStatus = findViewById(R.id.spinner_task_status);
         textViewTaskDescription = findViewById(R.id.text_view_task_description);
+        btnApply = findViewById(R.id.btnApply);
+        btnBack = findViewById(R.id.btnBack);
 
         // Set up spinner with task statuses
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
@@ -48,5 +53,15 @@ public class TaskDetailsActivity extends AppCompatActivity {
                 }
             });
         }
+
+        btnApply.setOnClickListener(v -> {
+            // Add code to update task status
+        });
+
+        btnBack.setOnClickListener(v -> {
+            Intent intentBack = new Intent(this, TaskListActivity.class);
+            startActivity(intentBack);
+            finish();
+        });
     }
 }
