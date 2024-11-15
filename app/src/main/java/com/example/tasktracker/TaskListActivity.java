@@ -3,6 +3,7 @@ package com.example.tasktracker;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 import androidx.annotation.Nullable;
@@ -13,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class TaskListActivity extends AppCompatActivity {
     private TaskViewModel taskViewModel;
+    private Button btnCreateTask, btnHome;
     private TaskAdapter taskAdapter;
     private ProgressBar progressBar;
 
@@ -23,6 +25,8 @@ public class TaskListActivity extends AppCompatActivity {
 
         // Initialize views
         RecyclerView recyclerView = findViewById(R.id.rvTasks);
+        btnCreateTask = findViewById(R.id.btnCreateTask);
+        btnHome = findViewById(R.id.btnBackToTask);
 
         // Setup RecyclerView
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -43,5 +47,19 @@ public class TaskListActivity extends AppCompatActivity {
         taskViewModel.getAllTasks().observe(this, tasks -> {
             taskAdapter.submitList(tasks);
         });
+
+        // Set click listeners
+        btnCreateTask.setOnClickListener(v -> {
+            Intent intent = new Intent(TaskListActivity.this, CreateTaskActivity.class);
+            startActivity(intent);
+            finish();
+        });
+
+        btnHome.setOnClickListener(v -> {
+            Intent intent = new Intent(TaskListActivity.this, MainActivity.class);
+            startActivity(intent);
+            finish();
+        });
+
     }
 }

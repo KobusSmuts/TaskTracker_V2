@@ -16,6 +16,14 @@ public class TaskViewModel extends AndroidViewModel {
     public TaskViewModel(@NonNull Application application) {
         super(application);
         taskRepository = new TaskRepository(application);
+
+        if (application == null) {
+            Log.e("SyncManager", "Application is null");
+        }
+        if (taskRepository.getTaskDao() == null) {
+            Log.e("SyncManager", "TaskDao is null");
+        }
+
         syncManager = new SyncManager(application, taskRepository.getTaskDao());
     }
 
