@@ -25,7 +25,7 @@ public class TaskDetailsActivity extends AppCompatActivity {
     private Spinner spnViewTaskStatus;
 
     private Button btnApply;
-    private String taskId;
+    private String uniqueTaskID, taskID;
     private FirebaseDatabaseService databaseService;
     private final ExecutorService taskUpdateExecutor = Executors.newSingleThreadExecutor();
     private final Handler mainHandler = new Handler(Looper.getMainLooper());
@@ -52,15 +52,16 @@ public class TaskDetailsActivity extends AppCompatActivity {
 
         // Get task ID passed from TaskListActivity
         Intent intent = getIntent();
-        taskId = intent.getStringExtra("TASK_ID");
-        Log.d("TaskDetailsActivity", "Task ID: " + taskId);
+        uniqueTaskID = intent.getStringExtra("TASK_UNIQUE_ID");
+        taskID = intent.getStringExtra("TASK_ID");
+        Log.d("TaskDetailsActivity", "Task ID: " + uniqueTaskID);
 
 
         // Initialize ViewModel
         TaskViewModel taskViewModel = new ViewModelProvider(this).get(TaskViewModel.class);
 
-        if (!taskId.isEmpty()) {
-            taskViewModel.getTaskById(taskId).observe(this, task -> {
+        if (!uniqueTaskID.isEmpty()) {
+            taskViewModel.getTaskById(taskID).observe(this, task -> {
                 if (task != null) {
                     textViewTaskName.setText(task.getName());
                     textViewTaskDescription.setText(task.getDescription());
@@ -71,9 +72,10 @@ public class TaskDetailsActivity extends AppCompatActivity {
             });
         }
 
-        btnApply.setOnClickListener(v -> {
-            // Add code to update task status
-        });
+
+        // Add code to update task status
+        setupUpdateTask();
+
 
         btnBack.setOnClickListener(v -> {
             Intent intentBack = new Intent(this, TaskListActivity.class);
@@ -83,24 +85,25 @@ public class TaskDetailsActivity extends AppCompatActivity {
     }
 
 
-    private void setupTaskCreation() {
+    private void setupUpdateTask() {
         FirebaseUser user = AuthManager.getCurrentUser();
         if (user != null) {
-            btnApply.setOnClickListener(view -> createTaskAsync());
+            btnApply.setOnClickListener(view -> updateTaskAsync());
         } else {
             btnApply.setEnabled(false);
             Toast.makeText(this, "User not authenticated", Toast.LENGTH_SHORT).show();
         }
     }
 
-    private void createTaskAsync() {
+    private void updateTaskAsync() {
 //        String taskName = textViewTaskName.getText().toString().trim();
         int taskStatus = spnViewTaskStatus.getSelectedItemPosition();
+        Log.d("TaskDetailsActivity", "Task Status: " + taskStatus);
 //        String taskDescription = textViewTaskDescription.getText().toString().trim();
 
 //        if (validateInput(taskName, taskDescription)) {
             taskUpdateExecutor.execute(() -> {
-                databaseService.updateTaskStatus(taskId, taskStatus);
+                databaseService.updateTaskStatus(uniqueTaskID, taskStatus);
                 mainHandler.post(() -> {
                     Toast.makeText(TaskDetailsActivity.this,
                             "Task update successfully", Toast.LENGTH_SHORT).show();

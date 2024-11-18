@@ -39,11 +39,11 @@ public class FirebaseDatabaseService {
         });
     }
 
-    public void updateTaskStatus(String taskId, int status) {
+    public void updateTaskStatus(String uniqueTaskID, int status) {
         firebaseExecutor.execute(() -> {
             try {
                 DatabaseReference tasksRef = database.getReference("tasks");
-                tasksRef.child(taskId).child("status").setValue(status)
+                tasksRef.child(uniqueTaskID).child("status").setValue(status)
                         .addOnSuccessListener(aVoid -> Log.d(TAG, "Status updated successfully"))
                         .addOnFailureListener(e -> Log.e(TAG, "Error updating status", e));
             } catch (Exception e) {
@@ -73,6 +73,7 @@ public class FirebaseDatabaseService {
                         Task task = taskSnapshot.getValue(Task.class);
                         if (task != null && (currentUserUid.equals(task.getUID()) ||
                                 currentUserEmail.equals(task.getEmployeeEmail()))) {
+                            task.setUniqueId(taskSnapshot.getKey());
                             taskList.add(task);
                         }
                     }

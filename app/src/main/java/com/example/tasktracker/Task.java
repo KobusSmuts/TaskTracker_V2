@@ -22,6 +22,7 @@ public class Task {
     private String description;
     @ColumnInfo(defaultValue = "1")
     private int status;
+    private String uniqueId;
 
     // No-argument constructor required by Firebase
     public Task() {
@@ -87,6 +88,14 @@ public class Task {
 
     public void setStatus(int status) {
         this.status = status;
+    }
+
+    public String getUniqueId() {
+        return uniqueId;
+    }
+
+    public void setUniqueId(String uniqueId) {
+        this.uniqueId = uniqueId;
     }
 
     @Override

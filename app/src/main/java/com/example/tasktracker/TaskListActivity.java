@@ -30,6 +30,7 @@ public class TaskListActivity extends AppCompatActivity {
 
         taskAdapter.setOnTaskClickListener(task -> {
             Intent intent = new Intent(TaskListActivity.this, TaskDetailsActivity.class);
+            intent.putExtra("TASK_UNIQUE_ID", task.getUniqueId());
             intent.putExtra("TASK_ID", task.getTaskID());
             startActivity(intent);
         });
