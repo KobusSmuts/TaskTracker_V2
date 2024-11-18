@@ -8,7 +8,8 @@ import java.util.Objects;
 
 @Entity(tableName = "tasks")
 public class Task {
-    @PrimaryKey (autoGenerate = true)
+    @PrimaryKey
+    @NonNull
     private String taskID;
 
     @NonNull
@@ -102,6 +103,6 @@ public class Task {
 
     @Override
     public int hashCode() {
-        return Objects.hash(UID, employeeEmail, name, description, status);
+        return Objects.hash(taskID, UID, employeeEmail, name, description, status);
     }
 }

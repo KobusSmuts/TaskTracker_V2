@@ -67,10 +67,11 @@ public class CreateTaskActivity extends AppCompatActivity {
         String employeeEmail = etEmployeeEmail.getText().toString().trim();
         String title = etTaskTitle.getText().toString().trim();
         String description = etTaskDescription.getText().toString().trim();
+        String taskID = (title.replace(" ","") + System.currentTimeMillis());
 
         if (validateInput(employeeEmail, title, description)) {
             taskCreationExecutor.execute(() -> {
-                Task task = new Task(user.getUid(), employeeEmail, title, description, 1);
+                Task task = new Task(taskID, user.getUid(), employeeEmail, title, description, 1);
                 databaseService.addTask(task);
                 mainHandler.post(() -> {
                     Toast.makeText(CreateTaskActivity.this,

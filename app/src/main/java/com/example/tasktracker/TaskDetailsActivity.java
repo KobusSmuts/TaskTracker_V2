@@ -53,6 +53,7 @@ public class TaskDetailsActivity extends AppCompatActivity {
         Intent intent = getIntent();
         taskId = intent.getStringExtra("TASK_ID");
 
+
         // Initialize ViewModel
         TaskViewModel taskViewModel = new ViewModelProvider(this).get(TaskViewModel.class);
 

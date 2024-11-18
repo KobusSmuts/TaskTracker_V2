@@ -13,10 +13,10 @@ import java.util.List;
 @Dao
 public interface TaskDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    long insert(Task task);
+    void insert(Task task);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    List<Long> insertAll(List<Task> tasks);
+    void insertAll(List<Task> tasks);
 
     @Update
     void update(Task task);
