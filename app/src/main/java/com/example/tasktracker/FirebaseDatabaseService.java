@@ -39,7 +39,7 @@ public class FirebaseDatabaseService {
         });
     }
 
-    public void updateTaskStatus(String taskId, String status) {
+    public void updateTaskStatus(long taskId, int status) {
         firebaseExecutor.execute(() -> {
             try {
                 DatabaseReference tasksRef = database.getReference("tasks");
