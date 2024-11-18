@@ -4,7 +4,6 @@
     <selectionStates>
       <SelectionState runConfigName="LoginActivity">
         <option name="selectionMode" value="DROPDOWN" />
-
         <DropdownSelection timestamp="2024-11-18T09:14:57.892633300Z">
           <Target type="DEFAULT_BOOT">
             <handle>
@@ -13,9 +12,6 @@
           </Target>
         </DropdownSelection>
         <DialogSelection />
-      </SelectionState>
-      <SelectionState runConfigName="CreateTaskActivity">
-        <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
     </selectionStates>
   </component>
