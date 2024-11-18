@@ -9,7 +9,7 @@ import java.util.Objects;
 @Entity(tableName = "tasks")
 public class Task {
     @PrimaryKey (autoGenerate = true)
-    private long taskID;
+    private String taskID;
 
     @NonNull
     private String UID;
@@ -23,11 +23,12 @@ public class Task {
     private int status;
 
     // No-argument constructor required by Firebase
-    public Task() {
+    public Task(String uid, String employeeEmail, String title, String description, int i) {
     }
 
     // Constructor with parameters
-    public Task(@NonNull String UID, @NonNull String employeeEmail, String name, String description, int status) {
+    public Task(@NonNull String taskID, @NonNull String UID, @NonNull String employeeEmail, String name, String description, int status) {
+        this.taskID = taskID;
         this.UID = UID;
         this.employeeEmail = employeeEmail;
         this.name = name;
@@ -36,11 +37,11 @@ public class Task {
     }
 
     @NonNull
-    public long getTaskID() {
+    public String getTaskID() {
         return taskID;
     }
 
-    public void setTaskID(@NonNull long taskID) {
+    public void setTaskID(@NonNull String taskID) {
         this.taskID = taskID;
     }
 

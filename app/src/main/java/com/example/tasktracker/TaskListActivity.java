@@ -45,6 +45,7 @@ public class TaskListActivity extends AppCompatActivity {
 
         btnCreateTask.setOnClickListener(v -> {
             startActivity(new Intent(this, CreateTaskActivity.class));
+            finish();
         });
 
         btnHome.setOnClickListener(v -> {

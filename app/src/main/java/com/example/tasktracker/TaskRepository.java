@@ -35,13 +35,13 @@ public class TaskRepository {
     }
 
     // Get task by ID from Room (local DB)
-    public LiveData<Task> getTaskById(long taskID) {
+    public LiveData<Task> getTaskById(String taskID) {
         LiveData<Task> taskLiveData = null;
         try {
             // Only fetch from local Room database, no online sync
             taskLiveData = taskDao.observeTaskById(taskID);
         } catch (Exception e) {
-            Log.e("TaskRepository", "Error getting task by ID", e);
+            Log.e("TaskRepository", "getTaskById() -> Error getting task by ID", e);
         }
         return taskLiveData;
     }

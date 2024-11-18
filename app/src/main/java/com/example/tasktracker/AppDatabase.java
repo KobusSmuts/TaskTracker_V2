@@ -17,8 +17,7 @@ public abstract class AppDatabase extends RoomDatabase {
         if (instance == null) {
             instance = Room.databaseBuilder(context.getApplicationContext(),
                             AppDatabase.class, "task_tracker_db")
-                    // No migrations are added here
-                    .fallbackToDestructiveMigration()  // This will recreate the database if needed (you can remove this if you don't want it)
+                    .fallbackToDestructiveMigration()
                     .build();
         }
         return instance;

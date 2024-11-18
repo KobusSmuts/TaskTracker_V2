@@ -18,7 +18,7 @@ public class TaskViewModel extends AndroidViewModel {
         return taskRepository.getAllTasksFromRoom();
     }
 
-    public LiveData<Task> getTaskById(long taskId) {
+    public LiveData<Task> getTaskById(String taskId) {
         return taskRepository.getTaskById(taskId);
     }
 }
