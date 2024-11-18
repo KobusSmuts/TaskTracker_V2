@@ -73,7 +73,7 @@ public class TaskRepository {
 
     // Update an existing task in Room (local DB)
     public void update(Task task) {
-        repositoryExecutor.execute(() -> taskDao.update(task)); // Update the task in the local DB
+        repositoryExecutor.execute(() -> taskDao.update(task.getStatus(), task.getName(), task.getDescription(), task.getTaskID())); // Update the task in the local DB
     }
 
     // Delete a task from Room (local DB)

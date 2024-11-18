@@ -7,7 +7,7 @@
     android:background="?android:attr/windowBackground">
 
     <!-- Task Name -->
-    <TextView
+    <EditText
         android:id="@+id/text_view_task_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -33,7 +33,7 @@
 
 
     <!-- Task Description -->
-    <TextView
+    <EditText
         android:id="@+id/text_view_task_description"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

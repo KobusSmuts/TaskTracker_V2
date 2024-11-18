@@ -39,11 +39,11 @@ public class FirebaseDatabaseService {
         });
     }
 
-    public void updateTaskStatus(String uniqueTaskID, int status) {
+    public void updateTaskStatus(String uniqueTaskID, Task task) {
         firebaseExecutor.execute(() -> {
             try {
                 DatabaseReference tasksRef = database.getReference("tasks");
-                tasksRef.child(uniqueTaskID).child("status").setValue(status)
+                tasksRef.child(uniqueTaskID).setValue(task)
                         .addOnSuccessListener(aVoid -> Log.d(TAG, "Status updated successfully"))
                         .addOnFailureListener(e -> Log.e(TAG, "Error updating status", e));
             } catch (Exception e) {

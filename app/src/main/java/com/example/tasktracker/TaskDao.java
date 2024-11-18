@@ -26,8 +26,8 @@ public abstract class TaskDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     public abstract void insertAll(List<Task> tasks);
 
-    @Update
-    public abstract void update(Task task);
+    @Query("UPDATE tasks SET status = :status, name = :name, description = :description WHERE taskID = :taskId")
+    public abstract void update(int status, String name, String description, String taskId);
 
     @Delete
     public abstract void delete(Task task);

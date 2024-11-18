@@ -7,6 +7,7 @@ import android.os.Looper;
 import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -21,12 +22,14 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 public class TaskDetailsActivity extends AppCompatActivity {
-    private TextView textViewTaskName, textViewTaskDescription;
+    private EditText textViewTaskName, textViewTaskDescription;
     private Spinner spnViewTaskStatus;
 
     private Button btnApply;
     private String uniqueTaskID, taskID;
+    private Task selectedTask;
     private FirebaseDatabaseService databaseService;
+    private TaskRepository localDatabase;
     private final ExecutorService taskUpdateExecutor = Executors.newSingleThreadExecutor();
     private final Handler mainHandler = new Handler(Looper.getMainLooper());
 
@@ -36,6 +39,7 @@ public class TaskDetailsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_task_view);
 
         databaseService = new FirebaseDatabaseService();
+        localDatabase = new TaskRepository(getApplication());
 
         // Initialize TextViews and Spinner
         textViewTaskName = findViewById(R.id.text_view_task_name);
@@ -63,6 +67,7 @@ public class TaskDetailsActivity extends AppCompatActivity {
         if (!uniqueTaskID.isEmpty()) {
             taskViewModel.getTaskById(taskID).observe(this, task -> {
                 if (task != null) {
+                    selectedTask = task;
                     textViewTaskName.setText(task.getName());
                     textViewTaskDescription.setText(task.getDescription());
                     // Set the spinner selection based on the task status
@@ -96,21 +101,25 @@ public class TaskDetailsActivity extends AppCompatActivity {
     }
 
     private void updateTaskAsync() {
-//        String taskName = textViewTaskName.getText().toString().trim();
+        String taskName = textViewTaskName.getText().toString().trim();
         int taskStatus = spnViewTaskStatus.getSelectedItemPosition();
-        Log.d("TaskDetailsActivity", "Task Status: " + taskStatus);
-//        String taskDescription = textViewTaskDescription.getText().toString().trim();
+        String taskDescription = textViewTaskDescription.getText().toString().trim();
 
-//        if (validateInput(taskName, taskDescription)) {
+        selectedTask.setName(taskName);
+        selectedTask.setDescription(taskDescription);
+        selectedTask.setStatus(taskStatus);
+
+        if (validateInput(taskName, taskDescription)) {
             taskUpdateExecutor.execute(() -> {
-                databaseService.updateTaskStatus(uniqueTaskID, taskStatus);
+                localDatabase.update(selectedTask);
+                databaseService.updateTaskStatus(uniqueTaskID, selectedTask);
                 mainHandler.post(() -> {
                     Toast.makeText(TaskDetailsActivity.this,
                             "Task update successfully", Toast.LENGTH_SHORT).show();
                     setResult(RESULT_OK);
                 });
             });
-//        }
+        }
     }
 
     private boolean validateInput(String taskName, String taskDescription) {
