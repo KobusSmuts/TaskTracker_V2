@@ -33,6 +33,7 @@ public class TaskListActivity extends AppCompatActivity {
             intent.putExtra("TASK_UNIQUE_ID", task.getUniqueId());
             intent.putExtra("TASK_ID", task.getTaskID());
             startActivity(intent);
+            finish();
         });
 
         taskViewModel = new ViewModelProvider(this).get(TaskViewModel.class);
