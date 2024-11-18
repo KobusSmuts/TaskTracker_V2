@@ -117,6 +117,8 @@ public class TaskDetailsActivity extends AppCompatActivity {
                     Toast.makeText(TaskDetailsActivity.this,
                             "Task update successfully", Toast.LENGTH_SHORT).show();
                     setResult(RESULT_OK);
+                    startActivity(new Intent(this, TaskListActivity.class));
+                    finish();
                 });
             });
         }

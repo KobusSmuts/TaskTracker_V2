@@ -88,6 +88,19 @@ public class FirebaseDatabaseService {
         });
     }
 
+    public void deleteTask(String uniqueTaskID) {
+        firebaseExecutor.execute(() -> {
+            try {
+                DatabaseReference tasksRef = database.getReference("tasks");
+                tasksRef.child(uniqueTaskID).removeValue()
+                    .addOnSuccessListener(aVoid -> Log.d(TAG, "Task deleted successfully"))
+                    .addOnFailureListener(e -> Log.e(TAG, "Error deleting task", e));
+            } catch (Exception e) {
+                Log.e(TAG, "Error in updateTaskStatus", e);
+            }
+        });
+    }
+
     public void cleanup() {
         firebaseExecutor.shutdown();
         try {

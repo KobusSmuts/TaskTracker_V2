@@ -12,9 +12,21 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_alignParentTop="true"
-        android:layout_above="@id/btnCreateTask"
+        android:layout_above="@id/btnDeleteTasks"
         android:layout_marginBottom="16dp"
         tools:visibility="visible" />
+
+    <!-- Delete Tasks Button -->
+    <Button
+        android:id="@+id/btnDeleteTasks"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/btnCreateTask"
+        android:layout_marginBottom="16dp"
+        android:background="@drawable/rounded"
+        android:text="Delete Tasks"
+        android:visibility="gone" />
 
     <!-- Create Task Button -->
     <Button

@@ -78,6 +78,8 @@ public class CreateTaskActivity extends AppCompatActivity {
                     Toast.makeText(CreateTaskActivity.this,
                             "Task created successfully", Toast.LENGTH_SHORT).show();
                     setResult(RESULT_OK);
+                    startActivity(new Intent(this, TaskListActivity.class));
+                    finish();
                 });
             });
         }
