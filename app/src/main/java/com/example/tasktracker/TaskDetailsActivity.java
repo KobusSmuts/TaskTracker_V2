@@ -37,12 +37,12 @@ public class TaskDetailsActivity extends AppCompatActivity {
 
         // Get task ID passed from TaskListActivity
         Intent intent = getIntent();
-        long taskId = intent.getLongExtra("TASK_ID", 0L);
+        String taskId = intent.getStringExtra("TASK_ID");
 
         // Initialize ViewModel
         taskViewModel = new ViewModelProvider(this).get(TaskViewModel.class);
 
-        if (taskId > 0) {
+        if (!taskId.isEmpty()) {
             taskViewModel.getTaskById(taskId).observe(this, task -> {
                 if (task != null) {
                     textViewTaskName.setText(task.getName());

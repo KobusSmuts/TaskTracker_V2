@@ -35,7 +35,7 @@ public class TaskRepository {
     }
 
     // Get task by ID from Room (local DB)
-    public LiveData<Task> getTaskById(long taskID) {
+    public LiveData<Task> getTaskById(String taskID) {
         LiveData<Task> taskLiveData = null;
         try {
             // Only fetch from local Room database, no online sync
@@ -50,8 +50,8 @@ public class TaskRepository {
     public void insert(Task task) {
         repositoryExecutor.execute(() -> {
             try {
-                long id = taskDao.insert(task);  // Insert the task into the local DB
-                task.setTaskID(id);  // Set the generated ID back to the task
+                taskDao.insert(task);  // Insert the task into the local DB
+                  // Set the generated ID back to the task
             } catch (Exception e) {
                 Log.e("TaskRepository", "Error inserting task", e);
             }
@@ -62,11 +62,9 @@ public class TaskRepository {
     public void insertTasks(List<Task> tasks) {
         repositoryExecutor.execute(() -> {
             try {
-                List<Long> ids = taskDao.insertAll(tasks);  // Insert tasks into the local DB
-                // Update tasks with their generated IDs if needed
-                for (int i = 0; i < tasks.size(); i++) {
-                    tasks.get(i).setTaskID(ids.get(i));
-                }
+                taskDao.insertAll(tasks);  // Insert tasks into the local DB
+
+
             } catch (Exception e) {
                 Log.e("TaskRepository", "Error inserting tasks", e);
             }
