@@ -7,35 +7,43 @@ import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.Update;
 import androidx.room.Delete;
+import androidx.room.Transaction;
 
 import java.util.List;
 
 @Dao
-public interface TaskDao {
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insert(Task task);
+public abstract class TaskDao {
+
+    @Transaction
+    public void syncTasks(List<Task> tasks) {
+        deleteAll();
+        insertAll(tasks);
+    }
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insertAll(List<Task> tasks);
+    public abstract void insert(Task task);
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    public abstract void insertAll(List<Task> tasks);
 
     @Update
-    void update(Task task);
+    public abstract void update(Task task);
 
     @Delete
-    void delete(Task task);
+    public abstract void delete(Task task);
 
     @Query("DELETE FROM tasks")
-    void deleteAll();
+    public abstract void deleteAll();
 
     @Query("SELECT COUNT(*) FROM tasks")
-    int getTaskCount();
+    public abstract int getTaskCount();
 
     @Query("SELECT * FROM tasks")
-    LiveData<List<Task>> getAllTasks();
+    public abstract LiveData<List<Task>> getAllTasks();
 
     @Query("SELECT * FROM tasks WHERE (uid = :uid OR employeeEmail = :employeeEmail) AND name = :name")
-    Task getTaskById(String uid, String employeeEmail, String name);
+    public abstract Task getTaskById(String uid, String employeeEmail, String name);
 
     @Query("SELECT * FROM tasks WHERE uid = :taskId")
-    LiveData<Task> observeTaskById(String taskId);
+    public abstract LiveData<Task> observeTaskById(String taskId);
 }
