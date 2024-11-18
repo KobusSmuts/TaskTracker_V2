@@ -108,6 +108,11 @@ public class MainActivity extends AppCompatActivity {
 
     private void updateNetworkStatus() {
         boolean online = NetworkUtil.isOnline(this);
+        if (online){
+            Toast.makeText(this, "Connected to internet", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(this, "No internet connection", Toast.LENGTH_SHORT).show();
+        }
         syncStatus.setText(online ? "Online" : "Offline");
         syncStatus.setTextColor(getResources().getColor(online ? R.color.green : R.color.red));
     }
