@@ -1,9 +1,10 @@
 package com.example.tasktracker;
 
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -11,15 +12,34 @@ import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
-/**
- * Adapter for displaying a list of tasks in the RecyclerView.
- */
-public class TaskAdapter extends ListAdapter<Task, TaskAdapter.TaskViewHolder> {
+import java.util.HashSet;
+import java.util.Set;
 
-    private OnTaskClickListener onTaskClickListener; // Listener for task clicks
+public class TaskAdapter extends ListAdapter<Task, TaskAdapter.TaskViewHolder> {
+    private boolean isSelectionMode = false;
+    private Set<Task> selectedTasks = new HashSet<>();
+    private OnSelectionChangedListener selectionChangedListener;
+    private OnTaskClickListener onTaskClickListener;
+
+
+    public interface OnSelectionChangedListener {
+        void onSelectionChanged(int selectedCount);
+    }
+
+    public interface OnTaskClickListener {
+        void onTaskClick(Task task);
+    }
 
     public TaskAdapter() {
         super(new TaskDiffCallback());
+    }
+
+    public void setOnSelectionChangedListener(OnSelectionChangedListener listener) {
+        this.selectionChangedListener = listener;
+    }
+
+    public void setOnTaskClickListener(OnTaskClickListener listener) {
+        this.onTaskClickListener = listener;
     }
 
     @NonNull
@@ -33,61 +53,95 @@ public class TaskAdapter extends ListAdapter<Task, TaskAdapter.TaskViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull TaskViewHolder holder, int position) {
         Task task = getItem(position);
-        holder.bind(task);
+        holder.bind(task, isSelectionMode, selectedTasks.contains(task));
+
+        holder.itemView.setOnClickListener(v -> {
+            if (isSelectionMode) {
+                toggleTaskSelection(task, holder);
+            } else if (onTaskClickListener != null) {
+                onTaskClickListener.onTaskClick(task);
+            }
+        });
+
+        holder.itemView.setOnLongClickListener(v -> {
+            if (!isSelectionMode) {
+                isSelectionMode = true;
+                selectedTasks.clear();
+                selectedTasks.add(task);
+                notifyDataSetChanged();
+                updateSelectionListener();
+                return true;
+            }
+            return false;
+        });
     }
 
-    /**
-     * Sets a listener to handle task clicks.
-     */
-    public void setOnTaskClickListener(OnTaskClickListener listener) {
-        this.onTaskClickListener = listener;
+    private void toggleTaskSelection(Task task, TaskViewHolder holder) {
+        if (selectedTasks.contains(task)) {
+            selectedTasks.remove(task);
+        } else {
+            selectedTasks.add(task);
+        }
+        notifyItemChanged(holder.getAdapterPosition());
+        updateSelectionListener();
+
+        if (selectedTasks.isEmpty()) {
+            isSelectionMode = false;
+            notifyDataSetChanged();
+        }
     }
 
-    /**
-     * ViewHolder for task items.
-     */
+    private void updateSelectionListener() {
+        if (selectionChangedListener != null) {
+            selectionChangedListener.onSelectionChanged(selectedTasks.size());
+        }
+    }
+
+    public void exitSelectionMode() {
+        isSelectionMode = false;
+        selectedTasks.clear();
+        notifyDataSetChanged();
+    }
+
+    public Set<Task> getSelectedTasks() {
+        return selectedTasks;
+    }
+
     class TaskViewHolder extends RecyclerView.ViewHolder {
         private final TextView textViewTaskName;
+        private final Drawable defaultBackground;
+//        private final View selectionOverlay;
 
         public TaskViewHolder(@NonNull View itemView) {
             super(itemView);
             textViewTaskName = itemView.findViewById(R.id.text_view_task_name);
-
-            // Handle item click
-            itemView.setOnClickListener(v -> {
-                if (onTaskClickListener != null) {
-                    int position = getAdapterPosition();
-                    if (position != RecyclerView.NO_POSITION) {
-                        onTaskClickListener.onTaskClick(getItem(position));
-                    }
-                }
-            });
+            defaultBackground = textViewTaskName.getBackground();
         }
 
-        public void bind(Task task) {
+        public void bind(Task task, boolean isSelectionMode, boolean isSelected) {
             textViewTaskName.setText(task.getName());
+
+            if (isSelectionMode) {
+                if(isSelected) {
+                    textViewTaskName.setBackgroundColor(Color.LTGRAY);
+                } else {
+                    textViewTaskName.setBackground(defaultBackground);
+                }
+            } else {
+                textViewTaskName.setBackground(defaultBackground);
+            }
         }
     }
 
-    /**
-     * Callback for calculating the diff between two tasks.
-     */
     static class TaskDiffCallback extends DiffUtil.ItemCallback<Task> {
         @Override
         public boolean areItemsTheSame(@NonNull Task oldItem, @NonNull Task newItem) {
-            return oldItem.getUID().equals(newItem.getUID()); // Compare by uID
+            return oldItem.getUID().equals(newItem.getUID());
         }
 
         @Override
         public boolean areContentsTheSame(@NonNull Task oldItem, @NonNull Task newItem) {
-            return oldItem.equals(newItem); // Compare content equality
+            return oldItem.equals(newItem);
         }
-    }
-
-    /**
-     * Interface for task click events.
-     */
-    public interface OnTaskClickListener {
-        void onTaskClick(Task task);
     }
 }
