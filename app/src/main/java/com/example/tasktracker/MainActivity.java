@@ -1,13 +1,20 @@
 package com.example.tasktracker;
 
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.Network;
+import android.net.NetworkCapabilities;
+import android.net.NetworkRequest;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.Observer;
+
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -16,6 +23,8 @@ public class MainActivity extends AppCompatActivity {
     private SyncManager syncManager;
     private ExecutorService executorService;
     private Handler mainThreadHandler;
+    private TextView syncStatus;
+    private ConnectivityManager.NetworkCallback networkCallback;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
         Button btnSync = findViewById(R.id.sync_button);
         Button btnTasks = findViewById(R.id.btnTasks);
         Button btnLogout = findViewById(R.id.btnLogout);
+        syncStatus = findViewById(R.id.sync_status);
 
         executorService = Executors.newSingleThreadExecutor();
         mainThreadHandler = new Handler(Looper.getMainLooper());
@@ -37,6 +47,31 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(MainActivity.this, message, Toast.LENGTH_SHORT).show();
             }
         });
+
+        updateNetworkStatus();
+
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkRequest networkRequest = new NetworkRequest.Builder()
+                .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+                .build();
+        networkCallback = new ConnectivityManager.NetworkCallback() {
+            @Override
+            public void onAvailable(Network network) {
+                runOnUiThread(() -> {
+                    syncStatus.setText("Online");
+                    syncStatus.setTextColor(getResources().getColor(R.color.green));
+                });
+            }
+
+            @Override
+            public void onLost(Network network) {
+                runOnUiThread(() -> {
+                    syncStatus.setText("Offline");
+                    syncStatus.setTextColor(getResources().getColor(R.color.red));
+                });
+            }
+        };
+        connectivityManager.registerNetworkCallback(networkRequest, networkCallback);
 
         btnSync.setOnClickListener(view -> {
             Toast.makeText(this, "Starting sync...", Toast.LENGTH_SHORT).show();
@@ -67,5 +102,13 @@ public class MainActivity extends AppCompatActivity {
             executorService.shutdown();
         }
         syncManager.cleanup();
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        connectivityManager.unregisterNetworkCallback(networkCallback);
+    }
+
+    private void updateNetworkStatus() {
+        boolean online = NetworkUtil.isOnline(this);
+        syncStatus.setText(online ? "Online" : "Offline");
+        syncStatus.setTextColor(getResources().getColor(online ? R.color.green : R.color.red));
     }
 }
