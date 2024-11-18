@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
@@ -52,6 +53,7 @@ public class TaskDetailsActivity extends AppCompatActivity {
         // Get task ID passed from TaskListActivity
         Intent intent = getIntent();
         taskId = intent.getStringExtra("TASK_ID");
+        Log.d("TaskDetailsActivity", "Task ID: " + taskId);
 
 
         // Initialize ViewModel

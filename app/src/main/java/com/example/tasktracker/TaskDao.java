@@ -44,6 +44,6 @@ public abstract class TaskDao {
     @Query("SELECT * FROM tasks WHERE (uid = :uid OR employeeEmail = :employeeEmail) AND name = :name")
     public abstract Task getTaskById(String uid, String employeeEmail, String name);
 
-    @Query("SELECT * FROM tasks WHERE uid = :taskId")
+    @Query("SELECT * FROM tasks WHERE taskID = :taskId")
     public abstract LiveData<Task> observeTaskById(String taskId);
 }
