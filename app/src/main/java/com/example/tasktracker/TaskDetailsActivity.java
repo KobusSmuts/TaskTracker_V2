@@ -23,9 +23,8 @@ public class TaskDetailsActivity extends AppCompatActivity {
     private TextView textViewTaskName, textViewTaskDescription;
     private Spinner spnViewTaskStatus;
 
-    private Button btnApply, btnBack;
-    private TaskViewModel taskViewModel;
-    private long taskId;
+    private Button btnApply;
+    private String taskId;
     private FirebaseDatabaseService databaseService;
     private final ExecutorService taskUpdateExecutor = Executors.newSingleThreadExecutor();
     private final Handler mainHandler = new Handler(Looper.getMainLooper());
@@ -42,7 +41,7 @@ public class TaskDetailsActivity extends AppCompatActivity {
         spnViewTaskStatus = findViewById(R.id.spinner_task_status);
         textViewTaskDescription = findViewById(R.id.text_view_task_description);
         btnApply = findViewById(R.id.btnApply);
-        btnBack = findViewById(R.id.btnBack);
+        Button btnBack = findViewById(R.id.btnBack);
 
         // Set up spinner with task statuses
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
@@ -52,12 +51,12 @@ public class TaskDetailsActivity extends AppCompatActivity {
 
         // Get task ID passed from TaskListActivity
         Intent intent = getIntent();
-        taskId = intent.getLongExtra("TASK_ID", 0L);
+        taskId = intent.getStringExtra("TASK_ID");
 
         // Initialize ViewModel
-        taskViewModel = new ViewModelProvider(this).get(TaskViewModel.class);
+        TaskViewModel taskViewModel = new ViewModelProvider(this).get(TaskViewModel.class);
 
-        if (taskId > 0) {
+        if (!taskId.isEmpty()) {
             taskViewModel.getTaskById(taskId).observe(this, task -> {
                 if (task != null) {
                     textViewTaskName.setText(task.getName());
@@ -92,11 +91,11 @@ public class TaskDetailsActivity extends AppCompatActivity {
     }
 
     private void createTaskAsync() {
-        String taskName = textViewTaskName.getText().toString().trim();
+//        String taskName = textViewTaskName.getText().toString().trim();
         int taskStatus = spnViewTaskStatus.getSelectedItemPosition();
-        String taskDescription = textViewTaskDescription.getText().toString().trim();
+//        String taskDescription = textViewTaskDescription.getText().toString().trim();
 
-        if (validateInput(taskName, taskDescription)) {
+//        if (validateInput(taskName, taskDescription)) {
             taskUpdateExecutor.execute(() -> {
                 databaseService.updateTaskStatus(taskId, taskStatus);
                 mainHandler.post(() -> {
@@ -105,7 +104,7 @@ public class TaskDetailsActivity extends AppCompatActivity {
                     setResult(RESULT_OK);
                 });
             });
-        }
+//        }
     }
 
     private boolean validateInput(String taskName, String taskDescription) {
@@ -145,4 +144,4 @@ public class TaskDetailsActivity extends AppCompatActivity {
 
 
 
-}
+

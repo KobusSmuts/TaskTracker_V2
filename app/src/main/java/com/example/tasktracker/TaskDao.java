@@ -37,5 +37,5 @@ public interface TaskDao {
     Task getTaskById(String uid, String employeeEmail, String name);
 
     @Query("SELECT * FROM tasks WHERE uid = :taskId")
-    LiveData<Task> observeTaskById(long taskId);
+    LiveData<Task> observeTaskById(String taskId);
 }

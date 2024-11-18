@@ -35,7 +35,7 @@ public class TaskRepository {
     }
 
     // Get task by ID from Room (local DB)
-    public LiveData<Task> getTaskById(long taskID) {
+    public LiveData<Task> getTaskById(String taskID) {
         LiveData<Task> taskLiveData = null;
         try {
             // Only fetch from local Room database, no online sync
