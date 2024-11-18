@@ -17,6 +17,7 @@ public class CreateTaskActivity extends AppCompatActivity {
     private EditText etTaskTitle, etTaskDescription, etEmployeeEmail;
     private Button btnAddTask, btnViewTask, btnHome;
     private FirebaseDatabaseService databaseService;
+    private TaskRepository localDatabase;
     private final ExecutorService taskCreationExecutor = Executors.newSingleThreadExecutor();
     private final Handler mainHandler = new Handler(Looper.getMainLooper());
 
@@ -49,6 +50,7 @@ public class CreateTaskActivity extends AppCompatActivity {
         btnViewTask = findViewById(R.id.btnViewTasks);
         btnHome = findViewById(R.id.btnHome);
         databaseService = new FirebaseDatabaseService();
+        localDatabase = new TaskRepository(getApplication());
     }
 
     private void setupTaskCreation() {

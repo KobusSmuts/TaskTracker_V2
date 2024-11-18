@@ -24,7 +24,7 @@ public class Task {
     private int status;
 
     // No-argument constructor required by Firebase
-    public Task() {
+    public Task(String uid, String employeeEmail, String title, String description, int i) {
     }
 
     // Constructor with parameters
