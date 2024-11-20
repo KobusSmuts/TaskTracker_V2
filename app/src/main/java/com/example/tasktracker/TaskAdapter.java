@@ -5,6 +5,8 @@ import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -14,14 +16,17 @@ import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
-public class TaskAdapter extends ListAdapter<Task, TaskAdapter.TaskViewHolder> {
+public class TaskAdapter extends ListAdapter<Task, TaskAdapter.TaskViewHolder> implements Filterable {
     private boolean isSelectionMode = false;
     private Set<Task> selectedTasks = new HashSet<>();
     private OnSelectionChangedListener selectionChangedListener;
     private OnTaskClickListener onTaskClickListener;
+    private List<Task> fullTaskList;
 
     public interface OnSelectionChangedListener {
         void onSelectionChanged(int selectedCount);
@@ -33,6 +38,7 @@ public class TaskAdapter extends ListAdapter<Task, TaskAdapter.TaskViewHolder> {
 
     public TaskAdapter() {
         super(new TaskDiffCallback());
+        fullTaskList = new ArrayList<>();
     }
 
     public void setOnSelectionChangedListener(OnSelectionChangedListener listener) {
@@ -110,7 +116,6 @@ public class TaskAdapter extends ListAdapter<Task, TaskAdapter.TaskViewHolder> {
             return false;
         });
 
-        // Binding selection state
         if (isSelectionMode) {
             holder.itemView.setBackgroundColor(selectedTasks.contains(task) ? Color.LTGRAY : Color.TRANSPARENT);
         } else {
@@ -148,6 +153,42 @@ public class TaskAdapter extends ListAdapter<Task, TaskAdapter.TaskViewHolder> {
     public Set<Task> getSelectedTasks() {
         return selectedTasks;
     }
+
+    public void submitFullList(List<Task> tasks) {
+        fullTaskList.clear();
+        fullTaskList.addAll(tasks);
+        submitList(tasks);
+    }
+
+    @Override
+    public Filter getFilter() {
+        return taskFilter;
+    }
+
+    private Filter taskFilter = new Filter() {
+        @Override
+        protected FilterResults performFiltering(CharSequence constraint) {
+            List<Task> filteredList = new ArrayList<>();
+            if (constraint == null || constraint.length() == 0) {
+                filteredList.addAll(fullTaskList);
+            } else {
+                String filterPattern = constraint.toString().toLowerCase().trim();
+                for (Task task : fullTaskList) {
+                    if (task.getName().toLowerCase().contains(filterPattern)) {
+                        filteredList.add(task);
+                    }
+                }
+            }
+            FilterResults results = new FilterResults();
+            results.values = filteredList;
+            return results;
+        }
+
+        @Override
+        protected void publishResults(CharSequence constraint, FilterResults results) {
+            submitList((List<Task>) results.values);
+        }
+    };
 
     class TaskViewHolder extends RecyclerView.ViewHolder {
         private final TextView textViewTaskName;
