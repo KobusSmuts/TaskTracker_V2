@@ -26,6 +26,19 @@ public class FirebaseDatabaseService {
         firebaseExecutor = Executors.newFixedThreadPool(2);
     }
 
+    public void addUser(User user) {
+        firebaseExecutor.execute(() -> {
+            try {
+                DatabaseReference tasksRef = database.getReference("users");
+                tasksRef.push().setValue(user)
+                        .addOnSuccessListener(aVoid -> Log.d(TAG, "User added successfully"))
+                        .addOnFailureListener(e -> Log.e(TAG, "Error adding user", e));
+            } catch (Exception e) {
+                Log.e(TAG, "Error in addUser", e);
+            }
+        });
+    }
+
     public void addTask(Task task) {
         firebaseExecutor.execute(() -> {
             try {

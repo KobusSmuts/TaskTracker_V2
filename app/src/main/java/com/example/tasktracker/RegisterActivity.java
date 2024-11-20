@@ -2,6 +2,7 @@ package com.example.tasktracker;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -18,6 +19,7 @@ public class RegisterActivity extends AppCompatActivity {
     private Spinner spnRole;
     private Button btnRegister, btnLogin;
     private FirebaseAuthService authService;
+    private FirebaseDatabaseService databaseService;
 
     public void onStart() {
         super.onStart();
@@ -40,6 +42,7 @@ public class RegisterActivity extends AppCompatActivity {
         btnRegister = findViewById(R.id.btnRegister);
         btnLogin = findViewById(R.id.btnLogin);
         authService = new FirebaseAuthService();
+        databaseService = new FirebaseDatabaseService();
 
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
                 R.array.register_role_array, android.R.layout.simple_spinner_item);
@@ -50,6 +53,7 @@ public class RegisterActivity extends AppCompatActivity {
         btnRegister.setOnClickListener(view -> {
             String email = etEmail.getText().toString();
             String password = etPassword.getText().toString();
+            int selectedRole = spnRole.getSelectedItemPosition();
 
             if (email.isEmpty()) {
                 Toast.makeText(RegisterActivity.this, "Please enter an email", Toast.LENGTH_SHORT).show();
@@ -61,6 +65,18 @@ public class RegisterActivity extends AppCompatActivity {
             }
             authService.registerUser(email, password, task -> {
                 if (task.isSuccessful()) {
+                    String uid = task.getResult().getUser().getUid();
+                    User user = new User();
+                    user.setUserEmail(email);
+                    user.setUID(uid);
+                    user.setRole(selectedRole);
+
+                    Log.d("RegisterActivity", "user email = " + email);
+                    Log.d("RegisterActivity", "user selectedRole = " + selectedRole);
+                    Log.d("RegisterActivity", "user UID = " + uid);
+
+                    databaseService.addUser(user);
+
                     Toast.makeText(RegisterActivity.this, "Registration successful!", Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
                     startActivity(intent);
@@ -69,6 +85,8 @@ public class RegisterActivity extends AppCompatActivity {
                     Toast.makeText(RegisterActivity.this, "Registration failed!", Toast.LENGTH_SHORT).show();
                 }
             });
+
+
         });
 
         btnLogin.setOnClickListener(view -> {
