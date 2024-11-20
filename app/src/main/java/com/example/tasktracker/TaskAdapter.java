@@ -5,6 +5,8 @@ import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -20,7 +22,6 @@ public class TaskAdapter extends ListAdapter<Task, TaskAdapter.TaskViewHolder> {
     private Set<Task> selectedTasks = new HashSet<>();
     private OnSelectionChangedListener selectionChangedListener;
     private OnTaskClickListener onTaskClickListener;
-
 
     public interface OnSelectionChangedListener {
         void onSelectionChanged(int selectedCount);
@@ -47,6 +48,40 @@ public class TaskAdapter extends ListAdapter<Task, TaskAdapter.TaskViewHolder> {
     public TaskViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.task_list_layout, parent, false);
+
+        RelativeLayout relativeLayout = new RelativeLayout(parent.getContext());
+        relativeLayout.setLayoutParams(new ViewGroup.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+        ));
+        relativeLayout.setPadding(16, 16, 16, 16);
+
+        // Add the TextView for task name
+        TextView textViewTaskName = new TextView(parent.getContext());
+        textViewTaskName.setId(View.generateViewId());
+        textViewTaskName.setTextSize(18);
+        textViewTaskName.setTextColor(parent.getContext().getResources().getColor(android.R.color.black));
+
+        RelativeLayout.LayoutParams taskNameParams = new RelativeLayout.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        taskNameParams.addRule(RelativeLayout.ALIGN_PARENT_START);
+        taskNameParams.addRule(RelativeLayout.CENTER_VERTICAL);
+
+        relativeLayout.addView(textViewTaskName, taskNameParams);
+
+        ImageView editIcon = new ImageView(parent.getContext());
+        editIcon.setId(View.generateViewId());
+        editIcon.setImageResource(R.drawable.ic_edit);
+
+        RelativeLayout.LayoutParams iconParams = new RelativeLayout.LayoutParams(86, 86);
+        iconParams.addRule(RelativeLayout.ALIGN_PARENT_END);
+        iconParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+        iconParams.setMargins(0, 100, 92, 0);
+
+        relativeLayout.addView(editIcon, iconParams);
+
+        ((ViewGroup) itemView).addView(relativeLayout);
+
         return new TaskViewHolder(itemView);
     }
 
@@ -74,6 +109,13 @@ public class TaskAdapter extends ListAdapter<Task, TaskAdapter.TaskViewHolder> {
             }
             return false;
         });
+
+        // Binding selection state
+        if (isSelectionMode) {
+            holder.itemView.setBackgroundColor(selectedTasks.contains(task) ? Color.LTGRAY : Color.TRANSPARENT);
+        } else {
+            holder.itemView.setBackgroundColor(Color.TRANSPARENT);
+        }
     }
 
     private void toggleTaskSelection(Task task, TaskViewHolder holder) {
@@ -110,7 +152,6 @@ public class TaskAdapter extends ListAdapter<Task, TaskAdapter.TaskViewHolder> {
     class TaskViewHolder extends RecyclerView.ViewHolder {
         private final TextView textViewTaskName;
         private final Drawable defaultBackground;
-//        private final View selectionOverlay;
 
         public TaskViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -122,7 +163,7 @@ public class TaskAdapter extends ListAdapter<Task, TaskAdapter.TaskViewHolder> {
             textViewTaskName.setText(task.getName());
 
             if (isSelectionMode) {
-                if(isSelected) {
+                if (isSelected) {
                     textViewTaskName.setBackgroundColor(Color.LTGRAY);
                 } else {
                     textViewTaskName.setBackground(defaultBackground);
