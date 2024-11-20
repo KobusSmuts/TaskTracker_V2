@@ -21,30 +21,6 @@
         android:textColor="?android:textColorPrimary"/>
 
     <EditText
-        android:id="@+id/etCompanyName"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:autofillHints=""
-        android:hint="@string/company_name"
-        android:inputType="text"
-        android:padding="16dp"
-        android:background="@drawable/rounded"
-        android:layout_marginBottom="16dp"
-        android:textColor="?android:textColorPrimary"/>
-
-    <EditText
-        android:id="@+id/etUsername"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:autofillHints=""
-        android:hint="@string/username"
-        android:inputType="text"
-        android:padding="16dp"
-        android:background="@drawable/rounded"
-        android:layout_marginBottom="16dp"
-        android:textColor="?android:textColorPrimary"/>
-
-    <EditText
         android:id="@+id/etPassword"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -53,8 +29,28 @@
         android:inputType="textPassword"
         android:padding="16dp"
         android:background="@drawable/rounded"
-        android:layout_marginBottom="32dp"
+        android:layout_marginBottom="16dp"
         android:textColor="?android:textColorPrimary"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingTop="16dp"
+        android:paddingBottom="16dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="4dp"
+        android:layout_marginBottom="32dp"
+        android:background="@drawable/rounded">
+
+        <Spinner
+            android:id="@+id/spinner_register"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/user_role"
+            android:textSize="18sp"
+            android:textColor="?android:attr/textColorSecondary" />
+    </LinearLayout>
 
     <Button
         android:id="@+id/btnRegister"

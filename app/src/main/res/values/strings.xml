@@ -20,9 +20,14 @@
     <string name="sync_tasks">Sync Tasks</string>
     <string name="go_to_tasks">Go to Tasks</string>
     <string name="logout">Logout</string>
+    <string name="user_role">User Role</string>
     <string-array name="task_status_array">
         <item>To Do</item>
         <item>In Progress</item>
         <item>Completed</item>
+    </string-array>
+    <string-array name="register_role_array">
+        <item>Manager</item>
+        <item>Employee</item>
     </string-array>
 </resources>
