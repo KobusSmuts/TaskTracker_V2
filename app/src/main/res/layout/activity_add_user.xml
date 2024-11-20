@@ -15,12 +15,16 @@
 
     <Button
         android:id="@+id/btnSave"
+        android:background="@drawable/rounded"
+        android:backgroundTint="?attr/colorPrimary"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/save_user"/>
 
     <Button
         android:id="@+id/btnBack"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+        android:background="@drawable/rounded"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/back"/>

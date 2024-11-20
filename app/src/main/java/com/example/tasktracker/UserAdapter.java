@@ -1,6 +1,7 @@
 package com.example.tasktracker;
 
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -111,20 +112,25 @@ public class UserAdapter extends ListAdapter<User, UserAdapter.UserViewHolder> {
 
     static class UserViewHolder extends RecyclerView.ViewHolder {
         private final TextView textViewUserEmail;
+        private final Drawable defaultBackground;
 
         public UserViewHolder(@NonNull View itemView) {
             super(itemView);
-
             textViewUserEmail = itemView.findViewById(R.id.text_view_user_email);
+            defaultBackground = textViewUserEmail.getBackground();
         }
 
         public void bind(User user, boolean isSelectionMode, boolean isSelected) {
             textViewUserEmail.setText(user.getUserEmail());
 
             if (isSelectionMode) {
-                itemView.setBackgroundColor(isSelected ? Color.LTGRAY : Color.TRANSPARENT);
+                if (isSelected) {
+                    textViewUserEmail.setBackgroundColor(Color.LTGRAY);
+                } else {
+                    textViewUserEmail.setBackground(defaultBackground);
+                }
             } else {
-                itemView.setBackgroundColor(Color.TRANSPARENT);
+                textViewUserEmail.setBackground(defaultBackground);
             }
         }
     }
