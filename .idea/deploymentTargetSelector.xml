@@ -4,7 +4,7 @@
     <selectionStates>
       <SelectionState runConfigName="LoginActivity">
         <option name="selectionMode" value="DROPDOWN" />
-        <DropdownSelection timestamp="2024-11-20T11:55:54.191276100Z">
+        <DropdownSelection timestamp="2024-11-20T16:01:01.141415100Z">
           <Target type="DEFAULT_BOOT">
             <handle>
               <DeviceId pluginId="LocalEmulator" identifier="path=C:\Users\Work\.android\avd\Flutter_Emulator.avd" />

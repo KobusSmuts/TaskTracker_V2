@@ -5,12 +5,14 @@ import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import android.content.Context;
 
-@Database(entities = {Task.class}, version = 1)
+@Database(entities = {Task.class, User.class}, version = 2)
 public abstract class AppDatabase extends RoomDatabase {
     private static AppDatabase instance;
 
     // Modified to return our TaskDao implementation
     public abstract TaskDao taskDao();
+    public abstract UserDao userDao();
+
 
     public static synchronized AppDatabase getInstance(Context context) {
         if (instance == null) {

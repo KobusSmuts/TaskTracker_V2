@@ -32,6 +32,7 @@ public class TaskListActivity extends AppCompatActivity {
         btnDeleteTasks = findViewById(R.id.btnDeleteTasks);
         btnHome = findViewById(R.id.btnBackToTask);
         btnDeleteTasks.setVisibility(View.GONE);
+        String email = getIntent().getStringExtra("USER_EMAIL") != null ? getIntent().getStringExtra("USER_EMAIL") : UserPreferences.getUserEmail(this) ;
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         taskAdapter = new TaskAdapter();
@@ -73,8 +74,8 @@ public class TaskListActivity extends AppCompatActivity {
 
         // Existing ViewModel and task list setup
         taskViewModel = new ViewModelProvider(this).get(TaskViewModel.class);
-        taskViewModel.getAllTasksFromRoom().observe(this, tasks -> {
-            if (tasks == null || tasks.isEmpty()) {
+        taskViewModel.getAllTasksFromRoomByEmail(email).observe(this, tasks -> {
+            if (tasks == null) {
                 Toast.makeText(this, "No tasks found", Toast.LENGTH_SHORT).show();
             }
             taskAdapter.submitList(tasks);

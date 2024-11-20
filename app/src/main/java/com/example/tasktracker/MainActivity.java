@@ -43,9 +43,15 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         Button btnSync = findViewById(R.id.sync_button);
-        Button btnTasks = findViewById(R.id.btnTasks);
+        Button btnUsersOrTasks = findViewById(R.id.btnUsersOrTasks);
         Button btnLogout = findViewById(R.id.btnLogout);
         syncStatus = findViewById(R.id.sync_status);
+
+        if (UserPreferences.getUserRole(this) == 0) {
+            btnUsersOrTasks.setText("View Staff");
+        } else {
+            btnUsersOrTasks.setText("GO TO TASKS");
+        }
 
         executorService = Executors.newSingleThreadExecutor();
         mainThreadHandler = new Handler(Looper.getMainLooper());
@@ -100,14 +106,23 @@ public class MainActivity extends AppCompatActivity {
             executorService.execute(() -> syncManager.syncTasks());
         });
 
-        btnTasks.setOnClickListener(view -> {
-            Intent intent = new Intent(MainActivity.this, TaskListActivity.class);
-            startActivity(intent);
+        btnUsersOrTasks.setOnClickListener(view -> {
+            if (UserPreferences.getUserRole(this) == 0) {
+                Intent intent = new Intent(MainActivity.this, UserListActivity.class);
+                startActivity(intent);
+                finish();
+            } else {
+                Intent intent = new Intent(MainActivity.this, TaskListActivity.class);
+                startActivity(intent);
+                finish();
+            }
+
         });
 
         btnLogout.setOnClickListener(view -> {
             executorService.execute(() -> {
                 AuthManager.signOut();
+                UserPreferences.clearPreferences(MainActivity.this);
                 mainThreadHandler.post(() -> {
                     Intent intent = new Intent(MainActivity.this, LoginActivity.class);
                     startActivity(intent);
@@ -117,15 +132,15 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void initializeSyncManager() {
-        syncManager = new SyncManager(this, AppDatabase.getInstance(this).taskDao());
-        syncManager.getSyncStatus().observe(this, syncSuccessful -> {
-            if (syncSuccessful != null) {
-                String message = syncSuccessful ? "Sync successful" : "Sync failed";
-                mainThreadHandler.post(() -> Toast.makeText(MainActivity.this, message, Toast.LENGTH_SHORT).show());
-            }
-        });
-    }
+//    private void initializeSyncManager() {
+//        syncManager = new SyncManager(this, AppDatabase.getInstance(this).taskDao());
+//        syncManager.getSyncStatus().observe(this, syncSuccessful -> {
+//            if (syncSuccessful != null) {
+//                String message = syncSuccessful ? "Sync successful" : "Sync failed";
+//                mainThreadHandler.post(() -> Toast.makeText(MainActivity.this, message, Toast.LENGTH_SHORT).show());
+//            }
+//        });
+//    }
 
     private void handleBandwidthChange() {
         debounceHandler.removeCallbacks(debounceRunnable);
