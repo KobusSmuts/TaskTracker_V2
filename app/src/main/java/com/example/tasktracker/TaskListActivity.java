@@ -59,12 +59,13 @@ public class TaskListActivity extends AppCompatActivity {
                     .setMessage("Are you sure you want to delete the selected tasks?")
                     .setPositiveButton("Delete", (dialog, which) -> {
                         Set<Task> selectedTasks = taskAdapter.getSelectedTasks();
+                        int selectedCount = selectedTasks.size();
                         for (Task task : selectedTasks) {
                             taskViewModel.delete(task);
                             databaseService.deleteTask(task.getUniqueId());
                         }
                         taskAdapter.exitSelectionMode();
-                        Toast.makeText(this, selectedTasks.size() + " tasks deleted", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, selectedCount + " tasks deleted", Toast.LENGTH_SHORT).show();
                     })
                     .setNegativeButton("Cancel", null)
                     .show();

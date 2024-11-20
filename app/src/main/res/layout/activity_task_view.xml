@@ -20,17 +20,25 @@
         android:layout_marginBottom="8dp" />
 
     <!-- Task Status -->
-    <Spinner
-        android:id="@+id/spinner_task_status"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="16dp"
-        android:background="@drawable/rounded"
+        android:orientation="vertical"
+        android:paddingTop="16dp"
+        android:paddingBottom="16dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="4dp"
         android:layout_marginBottom="8dp"
-        android:text="@string/task_status"
-        android:textSize="18sp"
-        android:textColor="?android:attr/textColorSecondary" />
+        android:background="@drawable/rounded">
 
+        <Spinner
+            android:id="@+id/spinner_task_status"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/task_status"
+            android:textSize="18sp"
+            android:textColor="?android:attr/textColorSecondary" />
+    </LinearLayout>
 
     <!-- Task Description -->
     <EditText

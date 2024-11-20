@@ -51,7 +51,7 @@ public class SyncManager {
                                 }
                             });
                         } else {
-                            syncStatus.postValue(false);
+                            syncStatus.postValue(true);
                         }
                     }
 
