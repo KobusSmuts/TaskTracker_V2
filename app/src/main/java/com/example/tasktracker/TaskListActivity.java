@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.SearchView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
@@ -19,6 +20,7 @@ public class TaskListActivity extends AppCompatActivity {
     private FirebaseDatabaseService databaseService;
     private Button btnCreateTask, btnHome;
     private Button btnDeleteTasks;
+    private SearchView searchView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,6 +30,7 @@ public class TaskListActivity extends AppCompatActivity {
         databaseService = new FirebaseDatabaseService();
 
         RecyclerView recyclerView = findViewById(R.id.rvTasks);
+        searchView = findViewById(R.id.searchView);
         btnCreateTask = findViewById(R.id.btnCreateTask);
         btnDeleteTasks = findViewById(R.id.btnDeleteTasks);
         btnHome = findViewById(R.id.btnBackToTask);
@@ -37,7 +40,6 @@ public class TaskListActivity extends AppCompatActivity {
         taskAdapter = new TaskAdapter();
         recyclerView.setAdapter(taskAdapter);
 
-        // Existing click listener
         taskAdapter.setOnTaskClickListener(task -> {
             Intent intent = new Intent(TaskListActivity.this, TaskDetailsActivity.class);
             intent.putExtra("TASK_UNIQUE_ID", task.getUniqueId());
@@ -46,13 +48,11 @@ public class TaskListActivity extends AppCompatActivity {
             finish();
         });
 
-        // Selection change listener
         taskAdapter.setOnSelectionChangedListener(selectedCount -> {
             btnCreateTask.setVisibility(selectedCount > 0 ? View.GONE : View.VISIBLE);
             btnDeleteTasks.setVisibility(selectedCount > 0 ? View.VISIBLE : View.GONE);
         });
 
-        // Delete tasks button
         btnDeleteTasks.setOnClickListener(v -> {
             new AlertDialog.Builder(this)
                     .setTitle("Delete Selected Tasks")
@@ -71,13 +71,26 @@ public class TaskListActivity extends AppCompatActivity {
                     .show();
         });
 
-        // Existing ViewModel and task list setup
         taskViewModel = new ViewModelProvider(this).get(TaskViewModel.class);
         taskViewModel.getAllTasksFromRoom().observe(this, tasks -> {
             if (tasks == null || tasks.isEmpty()) {
                 Toast.makeText(this, "No tasks found", Toast.LENGTH_SHORT).show();
             }
-            taskAdapter.submitList(tasks);
+            taskAdapter.submitFullList(tasks);
+        });
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                taskAdapter.getFilter().filter(query);
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                taskAdapter.getFilter().filter(newText);
+                return false;
+            }
         });
 
         btnCreateTask.setOnClickListener(v -> {
