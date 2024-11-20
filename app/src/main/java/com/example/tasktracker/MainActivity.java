@@ -69,55 +69,22 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onAvailable(Network network) {
                 runOnUiThread(() -> {
-                    debounceHandler.removeCallbacks(debounceRunnable);
-                    debounceRunnable = () -> {
-                        String bandwidthInfo = NetworkUtil.getBandwidthInfo(MainActivity.this);
-                        if (NetworkUtil.isLowBandwidth(MainActivity.this)) {
-                            if (!lowBandwidthNotified) {
-                                showNotification("Low Bandwidth", "You are in a low bandwidth environment. " + bandwidthInfo);
-                                lowBandwidthNotified = true;
-                            }
-                        } else {
-                            if (lowBandwidthNotified) {
-                                showNotification("Bandwidth Sufficient", "The bandwidth is now sufficient for stable app functionality. " + bandwidthInfo);
-                                lowBandwidthNotified = false;
-                            } else if (bandwidthInfo != null) {
-                                showNotification("Bandwidth Changed", "The bandwidth has changed significantly. " + bandwidthInfo);
-                            }
-                        }
-                    };
-                    debounceHandler.postDelayed(debounceRunnable, 1000);
+                    updateNetworkStatus(); // Update online/offline status immediately
+                    handleBandwidthChange();
                 });
             }
 
             @Override
             public void onLost(Network network) {
-                // Handle network loss
+                runOnUiThread(() -> {
+                    updateNetworkStatus(); // Update online/offline status immediately
+                });
             }
 
             @Override
             public void onCapabilitiesChanged(Network network, NetworkCapabilities networkCapabilities) {
                 super.onCapabilitiesChanged(network, networkCapabilities);
-                runOnUiThread(() -> {
-                    debounceHandler.removeCallbacks(debounceRunnable);
-                    debounceRunnable = () -> {
-                        String bandwidthInfo = NetworkUtil.getBandwidthInfo(MainActivity.this);
-                        if (NetworkUtil.isLowBandwidth(MainActivity.this)) {
-                            if (!lowBandwidthNotified) {
-                                showNotification("Low Bandwidth", "You are in a low bandwidth environment. " + bandwidthInfo);
-                                lowBandwidthNotified = true;
-                            }
-                        } else {
-                            if (lowBandwidthNotified) {
-                                showNotification("Bandwidth Sufficient", "The bandwidth is now sufficient for stable app functionality. " + bandwidthInfo);
-                                lowBandwidthNotified = false;
-                            } else if (bandwidthInfo != null) {
-                                showNotification("Bandwidth Changed", "The bandwidth has changed significantly. " + bandwidthInfo);
-                            }
-                        }
-                    };
-                    debounceHandler.postDelayed(debounceRunnable, 1000); // 1-second debounce period
-                });
+                runOnUiThread(MainActivity.this::handleBandwidthChange);
             }
         };
 
@@ -150,18 +117,47 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    private void initializeSyncManager() {
+        syncManager = new SyncManager(this, AppDatabase.getInstance(this).taskDao());
+        syncManager.getSyncStatus().observe(this, syncSuccessful -> {
+            if (syncSuccessful != null) {
+                String message = syncSuccessful ? "Sync successful" : "Sync failed";
+                mainThreadHandler.post(() -> Toast.makeText(MainActivity.this, message, Toast.LENGTH_SHORT).show());
+            }
+        });
+    }
+
+    private void handleBandwidthChange() {
+        debounceHandler.removeCallbacks(debounceRunnable);
+        debounceRunnable = () -> {
+            String bandwidthInfo = NetworkUtil.getBandwidthInfo(MainActivity.this);
+            if (NetworkUtil.isLowBandwidth(MainActivity.this)) {
+                if (!lowBandwidthNotified) {
+                    showNotification("Low Bandwidth", "You are in a low bandwidth environment. " + bandwidthInfo);
+                    lowBandwidthNotified = true;
+                }
+            } else {
+                if (lowBandwidthNotified) {
+                    showNotification("Bandwidth Sufficient", "The bandwidth is now sufficient for stable app functionality. " + bandwidthInfo);
+                    lowBandwidthNotified = false;
+                } else if (bandwidthInfo != null) {
+                    showNotification("Bandwidth Changed", "The bandwidth has changed significantly. " + bandwidthInfo);
+                }
+            }
+        };
+        debounceHandler.postDelayed(debounceRunnable, 1000); // 1-second debounce period
+    }
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == REQUEST_CODE) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-                connectivityManager.registerNetworkCallback(new NetworkRequest.Builder()
-                        .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
-                        .build(), networkCallback);
-            } else {
-                Toast.makeText(this, "Permission denied. Unable to check network status.", Toast.LENGTH_SHORT).show();
-            }
+        if (requestCode == REQUEST_CODE && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+            connectivityManager.registerNetworkCallback(new NetworkRequest.Builder()
+                    .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+                    .build(), networkCallback);
+        } else {
+            Toast.makeText(this, "Permission denied. Unable to check network status.", Toast.LENGTH_SHORT).show();
         }
     }
 
