@@ -5,7 +5,6 @@ import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
-import androidx.room.Update;
 import androidx.room.Delete;
 import androidx.room.Transaction;
 
@@ -41,8 +40,8 @@ public abstract class TaskDao {
     @Query("SELECT * FROM tasks")
     public abstract LiveData<List<Task>> getAllTasks();
 
-    @Query("SELECT * FROM tasks WHERE (uid = :uid OR employeeEmail = :employeeEmail) AND name = :name")
-    public abstract Task getTaskById(String uid, String employeeEmail, String name);
+    @Query("SELECT * FROM tasks WHERE employeeEmail = :employeeEmail")
+    public abstract LiveData<List<Task>> getTasksByEmployeeEmail(String employeeEmail);
 
     @Query("SELECT * FROM tasks WHERE taskID = :taskId")
     public abstract LiveData<Task> observeTaskById(String taskId);

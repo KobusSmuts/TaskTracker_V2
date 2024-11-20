@@ -1,6 +1,7 @@
 package com.example.tasktracker;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -76,6 +77,9 @@ public class RegisterActivity extends AppCompatActivity {
                     Log.d("RegisterActivity", "user UID = " + uid);
 
                     databaseService.addUser(user);
+
+                    UserPreferences.saveUserRole(this, selectedRole);
+                    UserPreferences.saveUserEmail(this, email);
 
                     Toast.makeText(RegisterActivity.this, "Registration successful!", Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);

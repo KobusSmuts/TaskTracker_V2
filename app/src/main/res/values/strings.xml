@@ -21,6 +21,15 @@
     <string name="go_to_tasks">Go to Tasks</string>
     <string name="logout">Logout</string>
     <string name="user_role">User Role</string>
+    <string name="go_to_users">GO TO USERS</string>
+    <string name="delete_tasks">Delete Tasks</string>
+    <string name="create_user">Create User</string>
+    <string name="remove_user">Remove User</string>
+    <string name="add_user">Add User</string>
+    <string name="user_email">User Email</string>
+    <string name="back">Back</string>
+    <string name="save_user">Save User</string>
+    <string name="enter_email">Enter Email</string>
     <string-array name="task_status_array">
         <item>To Do</item>
         <item>In Progress</item>

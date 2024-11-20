@@ -1,8 +1,8 @@
 {
   "formatVersion": 1,
   "database": {
-    "version": 1,
-    "identityHash": "cadad44aaf32d58dbac21fbe197ceb7d",
+    "version": 2,
+    "identityHash": "c8eb5bfce69fc20712ce3f97c2fcf4ba",
     "entities": [
       {
         "tableName": "tasks",
@@ -60,12 +60,44 @@
         },
         "indices": [],
         "foreignKeys": []
+      },
+      {
+        "tableName": "users",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`userEmail` TEXT NOT NULL, `UID` TEXT NOT NULL, `role` INTEGER NOT NULL, PRIMARY KEY(`userEmail`))",
+        "fields": [
+          {
+            "fieldPath": "userEmail",
+            "columnName": "userEmail",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "UID",
+            "columnName": "UID",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "role",
+            "columnName": "role",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "userEmail"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": []
       }
     ],
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'cadad44aaf32d58dbac21fbe197ceb7d')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'c8eb5bfce69fc20712ce3f97c2fcf4ba')"
     ]
   }
 }
