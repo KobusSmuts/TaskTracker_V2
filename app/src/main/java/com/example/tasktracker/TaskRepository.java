@@ -46,6 +46,17 @@ public class TaskRepository {
         return taskLiveData;
     }
 
+    public LiveData<List<Task>> getAllTasksFromRoomByEmail(String email) {
+        LiveData<List<Task>> taskLiveData = null;
+        try {
+            // Only fetch from local Room database, no online sync
+            taskLiveData = taskDao.getTasksByEmployeeEmail(email);
+        } catch (Exception e) {
+            Log.e("TaskRepository", "getTaskById() -> Error getting task by ID", e);
+        }
+        return taskLiveData;
+    }
+
     // Insert a new task into Room (local DB)
     public void insert(Task task) {
         repositoryExecutor.execute(() -> {

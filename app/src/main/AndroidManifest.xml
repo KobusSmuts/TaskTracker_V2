@@ -16,7 +16,9 @@
 
         <activity android:name=".RegisterActivity" />
         <activity android:name=".TaskListActivity" />
+        <activity android:name=".UserListActivity" />
         <activity android:name=".CreateTaskActivity" />
+        <activity android:name=".AddUserActivity" />
         <activity android:name=".TaskDetailsActivity" />
         <activity android:name=".MainActivity" />
         <activity android:name=".LoginActivity"

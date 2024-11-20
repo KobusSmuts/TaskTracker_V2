@@ -8,40 +8,40 @@
     tools:context=".TaskListActivity">
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvTasks"
+        android:id="@+id/rvUsers"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_alignParentTop="true"
-        android:layout_above="@id/btnDeleteTasks"
+        android:layout_above="@id/btnRemoveUsers"
         android:layout_marginBottom="16dp"
         tools:visibility="visible" />
 
-    <!-- Delete Tasks Button -->
+    <!-- Remove Users Button -->
     <Button
-        android:id="@+id/btnDeleteTasks"
+        android:id="@+id/btnRemoveUsers"
         style="@style/Widget.MaterialComponents.Button.OutlinedButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@id/btnCreateTask"
+        android:layout_above="@id/btnAddUser"
         android:layout_marginBottom="16dp"
         android:background="@drawable/rounded"
-        android:text="@string/delete_tasks"
+        android:text="@string/remove_user"
         android:visibility="gone" />
 
-    <!-- Create Task Button -->
+    <!-- Add User Button -->
     <Button
-        android:id="@+id/btnCreateTask"
+        android:id="@+id/btnAddUser"
         style="@style/Widget.MaterialComponents.Button.OutlinedButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@id/btnBackToTask"
+        android:layout_above="@id/btnHome"
         android:layout_marginBottom="16dp"
         android:background="@drawable/rounded"
-        android:text="@string/create_task" />
+        android:text="@string/add_user" />
 
     <!-- Home Button -->
     <Button
-        android:id="@+id/btnBackToTask"
+        android:id="@+id/btnHome"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"

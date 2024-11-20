@@ -18,6 +18,10 @@ public class TaskViewModel extends AndroidViewModel {
         return taskRepository.getAllTasksFromRoom();
     }
 
+    public LiveData<List<Task>> getAllTasksFromRoomByEmail(String email) {
+        return taskRepository.getAllTasksFromRoomByEmail(email);
+    }
+
     public LiveData<Task> getTaskById(String taskId) {
         return taskRepository.getTaskById(taskId);
     }

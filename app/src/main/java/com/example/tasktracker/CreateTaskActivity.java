@@ -1,5 +1,7 @@
 package com.example.tasktracker;
 
+import static com.example.tasktracker.R.layout.activity_create_task;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -24,7 +26,7 @@ public class CreateTaskActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_create_task);
+        setContentView(activity_create_task);
 
         initializeViews();
         setupTaskCreation();

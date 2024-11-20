@@ -29,12 +29,77 @@ public class FirebaseDatabaseService {
     public void addUser(User user) {
         firebaseExecutor.execute(() -> {
             try {
-                DatabaseReference tasksRef = database.getReference("users");
-                tasksRef.push().setValue(user)
+                DatabaseReference userRef = database.getReference("users");
+                userRef.push().setValue(user)
                         .addOnSuccessListener(aVoid -> Log.d(TAG, "User added successfully"))
                         .addOnFailureListener(e -> Log.e(TAG, "Error adding user", e));
             } catch (Exception e) {
                 Log.e(TAG, "Error in addUser", e);
+            }
+        });
+    }
+
+    public void getUser(String uid, UserCallback callback) {
+        DatabaseReference userRef = database.getReference("users");
+        userRef.child(uid).get().addOnCompleteListener(task -> {
+            if (task.isSuccessful() && task.getResult().exists()) {
+                DataSnapshot snapshot = task.getResult();
+                User user = snapshot.getValue(User.class); // Map the data to a User object
+                if (user != null) {
+                    callback.onUserRetrieved(user); // Pass the User object to the callback
+                } else {
+                    callback.onUserRetrieved(null); // Handle cases where data is malformed
+                }
+            } else {
+                callback.onUserRetrieved(null); // Handle cases where the user is not found
+            }
+        });
+    }
+
+    public void getUserByEmail(String email, UserCallback callback) {
+        DatabaseReference userRef = database.getReference("users");
+
+        // Query by userEmail to find the user
+        userRef.orderByChild("userEmail").equalTo(email).limitToFirst(1)
+            .addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    if (snapshot.exists()) {
+                        // Iterate over results (though only one should be returned due to limitToFirst(1))
+                        for (DataSnapshot childSnapshot : snapshot.getChildren()) {
+                            User user = childSnapshot.getValue(User.class);
+                            if (user != null) {
+                                callback.onUserRetrieved(user); // Pass the user to the callback
+                                return;
+                            }
+                        }
+                    }
+                    // If no user found, return null
+                    callback.onUserRetrieved(null);
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                    Log.e(TAG, "Error retrieving user by email", error.toException());
+                    callback.onUserRetrieved(null);
+                }
+            });
+    }
+
+
+    public interface UserCallback {
+        void onUserRetrieved(User user);
+    }
+
+    public void deleteUser(String UUID) {
+        firebaseExecutor.execute(() -> {
+            try {
+                DatabaseReference tasksRef = database.getReference("users");
+                tasksRef.child(UUID).removeValue()
+                        .addOnSuccessListener(aVoid -> Log.d(TAG, "User deleted successfully"))
+                        .addOnFailureListener(e -> Log.e(TAG, "Error deleting user", e));
+            } catch (Exception e) {
+                Log.e(TAG, "Error in deleteUser", e);
             }
         });
     }

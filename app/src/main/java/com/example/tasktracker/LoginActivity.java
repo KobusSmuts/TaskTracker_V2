@@ -24,6 +24,7 @@ public class LoginActivity extends AppCompatActivity {
     private static final int REQUEST_CODE = 100;
     private EditText etUsername, etPassword;
     private FirebaseAuthService authService;
+    private FirebaseDatabaseService databaseService;
     private ExecutorService executorService;
     private Handler mainThreadHandler;
 
@@ -39,6 +40,7 @@ public class LoginActivity extends AppCompatActivity {
         Button btnLogin = findViewById(R.id.btnLogin);
         Button btnRegister = findViewById(R.id.btnRegister);
         authService = new FirebaseAuthService();
+        databaseService = new FirebaseDatabaseService();
 
         executorService = Executors.newSingleThreadExecutor();
         mainThreadHandler = new Handler(Looper.getMainLooper());
@@ -64,6 +66,19 @@ public class LoginActivity extends AppCompatActivity {
             executorService.execute(() -> {
                 authService.loginUser(email, password, task -> {
                     if (task.isSuccessful()) {
+                        String uid = authService.getCurrentUser().getUid();
+                        databaseService.getUserByEmail(email, user -> {
+                            if (user != null) {
+                                UserPreferences.saveUserRole(this, user.getRole()); // Save role globally
+                                UserPreferences.saveUserEmail(this, email);
+                                Intent intent = new Intent(this, MainActivity.class);
+                                startActivity(intent);
+                                finish();
+                            } else {
+                                Toast.makeText(this, "User data not found!", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+
                         Log.d(TAG, "loginUser: success");
                         mainThreadHandler.post(() -> {
                             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
