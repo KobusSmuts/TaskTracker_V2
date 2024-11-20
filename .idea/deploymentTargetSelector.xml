@@ -4,10 +4,10 @@
     <selectionStates>
       <SelectionState runConfigName="LoginActivity">
         <option name="selectionMode" value="DROPDOWN" />
-        <DropdownSelection timestamp="2024-11-18T09:14:57.892633300Z">
+        <DropdownSelection timestamp="2024-11-18T18:56:10.634311800Z">
           <Target type="DEFAULT_BOOT">
             <handle>
-              <DeviceId pluginId="LocalEmulator" identifier="path=C:\Users\User\.android\avd\Pixel_API_35.avd" />
+              <DeviceId pluginId="LocalEmulator" identifier="path=C:\Users\Work\.android\avd\Flutter_Emulator.avd" />
             </handle>
           </Target>
         </DropdownSelection>

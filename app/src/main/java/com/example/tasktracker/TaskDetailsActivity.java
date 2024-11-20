@@ -5,9 +5,12 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -117,6 +120,8 @@ public class TaskDetailsActivity extends AppCompatActivity {
                     Toast.makeText(TaskDetailsActivity.this,
                             "Task update successfully", Toast.LENGTH_SHORT).show();
                     setResult(RESULT_OK);
+                    startActivity(new Intent(this, TaskListActivity.class));
+                    finish();
                 });
             });
         }
